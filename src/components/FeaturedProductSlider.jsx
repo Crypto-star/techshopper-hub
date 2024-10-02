@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import useEmblaCarousel from 'embla-carousel-react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Link } from 'react-router-dom';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 const FeaturedProduct = ({ name, description, image }) => (
   <Card className="h-full">
@@ -20,7 +21,15 @@ const FeaturedProduct = ({ name, description, image }) => (
 );
 
 const FeaturedProductSlider = () => {
-  const [emblaRef] = useEmblaCarousel({ loop: true, align: 'start' });
+  const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true, align: 'start' });
+
+  const scrollPrev = useCallback(() => {
+    if (emblaApi) emblaApi.scrollPrev();
+  }, [emblaApi]);
+
+  const scrollNext = useCallback(() => {
+    if (emblaApi) emblaApi.scrollNext();
+  }, [emblaApi]);
 
   const featuredProducts = [
     { name: "Arduino Starter Kit", description: "Perfect for beginners to learn electronics and programming.", image: "/placeholder.svg" },
@@ -30,14 +39,22 @@ const FeaturedProductSlider = () => {
   ];
 
   return (
-    <div className="overflow-hidden" ref={emblaRef}>
-      <div className="flex">
-        {featuredProducts.map((product, index) => (
-          <div key={index} className="flex-[0_0_100%] min-w-0 pl-4">
-            <FeaturedProduct {...product} />
-          </div>
-        ))}
+    <div className="relative">
+      <div className="overflow-hidden" ref={emblaRef}>
+        <div className="flex">
+          {featuredProducts.map((product, index) => (
+            <div key={index} className="flex-[0_0_100%] min-w-0 pl-4">
+              <FeaturedProduct {...product} />
+            </div>
+          ))}
+        </div>
       </div>
+      <Button onClick={scrollPrev} className="absolute left-0 top-1/2 transform -translate-y-1/2 bg-white text-black hover:bg-gray-200">
+        <ChevronLeft />
+      </Button>
+      <Button onClick={scrollNext} className="absolute right-0 top-1/2 transform -translate-y-1/2 bg-white text-black hover:bg-gray-200">
+        <ChevronRight />
+      </Button>
     </div>
   );
 };

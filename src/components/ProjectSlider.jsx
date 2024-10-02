@@ -1,11 +1,20 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import useEmblaCarousel from 'embla-carousel-react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Link } from 'react-router-dom';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 const ProjectSlider = () => {
-  const [emblaRef] = useEmblaCarousel({ loop: true });
+  const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true });
+
+  const scrollPrev = useCallback(() => {
+    if (emblaApi) emblaApi.scrollPrev();
+  }, [emblaApi]);
+
+  const scrollNext = useCallback(() => {
+    if (emblaApi) emblaApi.scrollNext();
+  }, [emblaApi]);
 
   const projects = [
     {
@@ -26,25 +35,33 @@ const ProjectSlider = () => {
   ];
 
   return (
-    <div className="overflow-hidden" ref={emblaRef}>
-      <div className="flex">
-        {projects.map((project, index) => (
-          <div key={index} className="flex-[0_0_100%] min-w-0">
-            <Card className="m-4">
-              <CardHeader>
-                <img src={project.image} alt={project.title} className="w-full h-64 object-cover rounded-md mb-4" />
-                <CardTitle>{project.title}</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-gray-600 mb-4">{project.description}</p>
-                <Button asChild>
-                  <Link to="/projects">View Project Details</Link>
-                </Button>
-              </CardContent>
-            </Card>
-          </div>
-        ))}
+    <div className="relative">
+      <div className="overflow-hidden" ref={emblaRef}>
+        <div className="flex">
+          {projects.map((project, index) => (
+            <div key={index} className="flex-[0_0_100%] min-w-0">
+              <Card className="m-4">
+                <CardHeader>
+                  <img src={project.image} alt={project.title} className="w-full h-64 object-cover rounded-md mb-4" />
+                  <CardTitle>{project.title}</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-gray-600 mb-4">{project.description}</p>
+                  <Button asChild>
+                    <Link to="/projects">View Project Details</Link>
+                  </Button>
+                </CardContent>
+              </Card>
+            </div>
+          ))}
+        </div>
       </div>
+      <Button onClick={scrollPrev} className="absolute left-0 top-1/2 transform -translate-y-1/2 bg-white text-black hover:bg-gray-200">
+        <ChevronLeft />
+      </Button>
+      <Button onClick={scrollNext} className="absolute right-0 top-1/2 transform -translate-y-1/2 bg-white text-black hover:bg-gray-200">
+        <ChevronRight />
+      </Button>
     </div>
   );
 };
