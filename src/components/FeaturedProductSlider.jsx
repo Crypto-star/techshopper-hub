@@ -21,7 +21,16 @@ const FeaturedProduct = ({ name, description, image }) => (
 );
 
 const FeaturedProductSlider = () => {
-  const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true, align: 'start' });
+  const [emblaRef, emblaApi] = useEmblaCarousel({ 
+    loop: true, 
+    align: 'start',
+    slidesToScroll: 3,
+    breakpoints: {
+      '(min-width: 768px)': { slidesToScroll: 3 },
+      '(min-width: 480px)': { slidesToScroll: 2 },
+      '(max-width: 479px)': { slidesToScroll: 1 },
+    }
+  });
 
   const scrollPrev = useCallback(() => {
     if (emblaApi) emblaApi.scrollPrev();
@@ -36,6 +45,8 @@ const FeaturedProductSlider = () => {
     { name: "Raspberry Pi 4", description: "Powerful single-board computer for various projects.", image: "/placeholder.svg" },
     { name: "STEM Robot Kit", description: "Build and program your own robot with this educational kit.", image: "/placeholder.svg" },
     { name: "IoT Sensor Pack", description: "A collection of sensors for your Internet of Things projects.", image: "/placeholder.svg" },
+    { name: "3D Printer Kit", description: "Create your own 3D printed objects with this beginner-friendly kit.", image: "/placeholder.svg" },
+    { name: "Drone Building Set", description: "Assemble and fly your own custom drone with this comprehensive set.", image: "/placeholder.svg" },
   ];
 
   return (
@@ -43,7 +54,7 @@ const FeaturedProductSlider = () => {
       <div className="overflow-hidden" ref={emblaRef}>
         <div className="flex">
           {featuredProducts.map((product, index) => (
-            <div key={index} className="flex-[0_0_100%] min-w-0 pl-4">
+            <div key={index} className="flex-[0_0_33.33%] min-w-0 px-2">
               <FeaturedProduct {...product} />
             </div>
           ))}

@@ -6,7 +6,15 @@ import { Link } from 'react-router-dom';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 const ProjectSlider = () => {
-  const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true });
+  const [emblaRef, emblaApi] = useEmblaCarousel({ 
+    loop: true,
+    slidesToScroll: 3,
+    breakpoints: {
+      '(min-width: 768px)': { slidesToScroll: 3 },
+      '(min-width: 480px)': { slidesToScroll: 2 },
+      '(max-width: 479px)': { slidesToScroll: 1 },
+    }
+  });
 
   const scrollPrev = useCallback(() => {
     if (emblaApi) emblaApi.scrollPrev();
@@ -31,6 +39,16 @@ const ProjectSlider = () => {
       title: "Robotic Arm Kit",
       description: "Build and program a fully functional robotic arm for various applications.",
       image: "/placeholder.svg"
+    },
+    {
+      title: "Solar-Powered IoT Device",
+      description: "Develop an eco-friendly IoT device powered by solar energy for sustainable projects.",
+      image: "/placeholder.svg"
+    },
+    {
+      title: "AI-Powered Security Camera",
+      description: "Create an intelligent security camera system with machine learning capabilities.",
+      image: "/placeholder.svg"
     }
   ];
 
@@ -39,7 +57,7 @@ const ProjectSlider = () => {
       <div className="overflow-hidden" ref={emblaRef}>
         <div className="flex">
           {projects.map((project, index) => (
-            <div key={index} className="flex-[0_0_100%] min-w-0">
+            <div key={index} className="flex-[0_0_33.33%] min-w-0 px-2">
               <Card className="m-4">
                 <CardHeader>
                   <img src={project.image} alt={project.title} className="w-full h-64 object-cover rounded-md mb-4" />
