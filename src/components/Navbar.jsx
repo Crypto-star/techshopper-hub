@@ -4,13 +4,14 @@ import { ShoppingCart, Wrench, Briefcase, BookOpen, Users, Mail, LogIn } from 'l
 
 const Navbar = () => {
   const navItems = [
+    { name: 'Home', path: '/', icon: <ShoppingCart className="w-4 h-4" /> },
     { name: 'Products', path: '/products', icon: <ShoppingCart className="w-4 h-4" /> },
     { name: 'Services', path: '/services', icon: <Wrench className="w-4 h-4" /> },
     { name: 'Projects', path: '/projects', icon: <Briefcase className="w-4 h-4" /> },
     { name: 'Resources', path: '/resources', icon: <BookOpen className="w-4 h-4" /> },
     { name: 'About', path: '/about', icon: <Users className="w-4 h-4" /> },
     { name: 'Contact', path: '/contact', icon: <Mail className="w-4 h-4" /> },
-    { name: 'Sign In', path: '/auth', icon: <LogIn className="w-4 h-4" /> },
+    { name: 'Sign In', path: '/signin', icon: <LogIn className="w-4 h-4" /> },
   ];
 
   return (
