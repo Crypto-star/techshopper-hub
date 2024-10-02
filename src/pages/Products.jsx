@@ -1,6 +1,5 @@
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Grid } from "@/components/ui/grid";
 
 const ProductCategory = ({ title, items }) => (
   <Card className="mb-8">
@@ -26,7 +25,7 @@ const Products = () => {
         "Raspberry Pi 4 Model B - Powerful single-board computer",
         "DHT22 Temperature and Humidity Sensor - Accurate and reliable",
         "HC-SR04 Ultrasonic Sensor - For distance measurement projects",
-        "LM2596 DC-DC Buck Converter - Efficient power supply solution",
+        "LM2596 DC-DC Buck Converter - Efficient power supply solution"
       ]
     },
     {
@@ -36,7 +35,7 @@ const Products = () => {
         "Arduino-based Robot Car Kit - Build your own programmable robot",
         "IoT Weather Station Kit - Monitor local weather conditions",
         "Solar Power Charging Kit - Harness renewable energy",
-        "Electronic Piano Kit - Create your own musical instrument",
+        "Electronic Piano Kit - Create your own musical instrument"
       ]
     },
     {
@@ -46,7 +45,7 @@ const Products = () => {
         "Sphero BOLT - Programmable robotic ball for coding adventures",
         "Makeblock mBot - STEM educational robot kit",
         "Ozobot Bit Coding Robot - Tiny but mighty coding companion",
-        "LEGO Mindstorms Robot Inventor - Build and program advanced robots",
+        "LEGO Mindstorms Robot Inventor - Build and program advanced robots"
       ]
     },
     {
@@ -56,7 +55,7 @@ const Products = () => {
         "Jumper Wire Kit - 120pcs Multicolored",
         "Hakko FX888D-23BY Digital Soldering Station",
         "Fluke 117 Electricians True RMS Multimeter",
-        "ELEGOO 3D Printer Filament PLA 1.75mm",
+        "ELEGOO 3D Printer Filament PLA 1.75mm"
       ]
     },
     {
@@ -66,9 +65,9 @@ const Products = () => {
         "Introduction to IoT - Online video course",
         "PCB Design Mastery - Step-by-step tutorial series",
         "Robotics for Beginners - Interactive learning platform",
-        "Advanced Sensor Applications - Downloadable project guide",
+        "Advanced Sensor Applications - Downloadable project guide"
       ]
-    },
+    }
   ];
 
   return (
@@ -76,11 +75,11 @@ const Products = () => {
       <h1 className="text-3xl font-bold mb-8">Our Products</h1>
       <p className="mb-8">Discover our wide range of electronic components, DIY kits, STEM toys, and educational resources. Whether you're a beginner or an expert, we have everything you need to bring your ideas to life!</p>
       
-      <Grid className="gap-6">
+      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         {categories.map((category, index) => (
           <ProductCategory key={index} title={category.title} items={category.items} />
         ))}
-      </Grid>
+      </div>
     </div>
   );
 };

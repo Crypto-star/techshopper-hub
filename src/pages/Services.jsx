@@ -1,6 +1,5 @@
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Grid } from "@/components/ui/grid";
 
 const ServiceCard = ({ title, description }) => (
   <Card>
@@ -54,11 +53,11 @@ const Services = () => {
       <h1 className="text-3xl font-bold mb-8">Our Services</h1>
       <p className="mb-8">At TechnoMart, we offer a wide range of services to support your projects, from concept to completion. Whether you're a hobbyist, student, or professional, our expert team is here to help you succeed.</p>
       
-      <Grid className="gap-6">
+      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         {services.map((service, index) => (
           <ServiceCard key={index} title={service.title} description={service.description} />
         ))}
-      </Grid>
+      </div>
     </div>
   );
 };
