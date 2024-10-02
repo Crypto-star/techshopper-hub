@@ -4,7 +4,6 @@ import { ShoppingCart, Wrench, Briefcase, BookOpen, Users, Mail, LogIn } from 'l
 
 const Navbar = () => {
   const navItems = [
-    { name: 'Home', path: '/', icon: <ShoppingCart className="w-4 h-4" /> },
     { name: 'Products', path: '/products', icon: <ShoppingCart className="w-4 h-4" /> },
     { name: 'Services', path: '/services', icon: <Wrench className="w-4 h-4" /> },
     { name: 'Projects', path: '/projects', icon: <Briefcase className="w-4 h-4" /> },
