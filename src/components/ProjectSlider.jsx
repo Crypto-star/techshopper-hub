@@ -73,10 +73,10 @@ const ProjectSlider = () => {
           ))}
         </div>
       </div>
-      <Button onClick={scrollPrev} className="absolute left-0 top-1/2 transform -translate-y-1/2 bg-white text-black hover:bg-gray-200 hidden md:block">
+      <Button onClick={scrollPrev} className="absolute left-0 top-1/2 transform -translate-y-1/2 bg-white text-black hover:bg-gray-200">
         <ChevronLeft />
       </Button>
-      <Button onClick={scrollNext} className="absolute right-0 top-1/2 transform -translate-y-1/2 bg-white text-black hover:bg-gray-200 hidden md:block">
+      <Button onClick={scrollNext} className="absolute right-0 top-1/2 transform -translate-y-1/2 bg-white text-black hover:bg-gray-200">
         <ChevronRight />
       </Button>
     </div>
