@@ -6,9 +6,9 @@ import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 const Testimonial = ({ name, content }) => (
   <Card className="h-full">
-    <CardContent className="p-6">
-      <p className="italic mb-2">"{content}"</p>
-      <p className="font-semibold">- {name}</p>
+    <CardContent className="p-4 md:p-6">
+      <p className="italic text-sm md:text-base mb-2">"{content}"</p>
+      <p className="font-semibold text-sm md:text-base">- {name}</p>
     </CardContent>
   </Card>
 );
@@ -46,16 +46,16 @@ const TestimonialSlider = () => {
       <div className="overflow-hidden" ref={emblaRef}>
         <div className="flex">
           {testimonials.map((testimonial, index) => (
-            <div key={index} className="flex-[0_0_100%] min-w-0 pl-4">
+            <div key={index} className="flex-[0_0_100%] min-w-0 px-2">
               <Testimonial {...testimonial} />
             </div>
           ))}
         </div>
       </div>
-      <Button onClick={scrollPrev} className="absolute left-0 top-1/2 transform -translate-y-1/2 bg-white text-black hover:bg-gray-200">
+      <Button onClick={scrollPrev} className="absolute left-0 top-1/2 transform -translate-y-1/2 bg-white text-black hover:bg-gray-200 hidden md:block">
         <ChevronLeft />
       </Button>
-      <Button onClick={scrollNext} className="absolute right-0 top-1/2 transform -translate-y-1/2 bg-white text-black hover:bg-gray-200">
+      <Button onClick={scrollNext} className="absolute right-0 top-1/2 transform -translate-y-1/2 bg-white text-black hover:bg-gray-200 hidden md:block">
         <ChevronRight />
       </Button>
     </div>

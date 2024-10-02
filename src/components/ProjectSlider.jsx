@@ -8,11 +8,10 @@ import { ChevronLeft, ChevronRight } from 'lucide-react';
 const ProjectSlider = () => {
   const [emblaRef, emblaApi] = useEmblaCarousel({ 
     loop: true,
-    slidesToScroll: 3,
+    slidesToScroll: 1,
     breakpoints: {
+      '(min-width: 640px)': { slidesToScroll: 2 },
       '(min-width: 768px)': { slidesToScroll: 3 },
-      '(min-width: 480px)': { slidesToScroll: 2 },
-      '(max-width: 479px)': { slidesToScroll: 1 },
     }
   });
 
@@ -57,15 +56,15 @@ const ProjectSlider = () => {
       <div className="overflow-hidden" ref={emblaRef}>
         <div className="flex">
           {projects.map((project, index) => (
-            <div key={index} className="flex-[0_0_33.33%] min-w-0 px-2">
+            <div key={index} className="flex-[0_0_100%] sm:flex-[0_0_50%] md:flex-[0_0_33.33%] min-w-0 px-2">
               <Card className="m-4">
                 <CardHeader>
-                  <img src={project.image} alt={project.title} className="w-full h-64 object-cover rounded-md mb-4" />
-                  <CardTitle>{project.title}</CardTitle>
+                  <img src={project.image} alt={project.title} className="w-full h-48 md:h-64 object-cover rounded-md mb-4" />
+                  <CardTitle className="text-lg md:text-xl">{project.title}</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-gray-600 mb-4">{project.description}</p>
-                  <Button asChild>
+                  <p className="text-sm md:text-base text-gray-600 mb-4">{project.description}</p>
+                  <Button asChild className="w-full md:w-auto">
                     <Link to="/projects">View Project Details</Link>
                   </Button>
                 </CardContent>
@@ -74,10 +73,10 @@ const ProjectSlider = () => {
           ))}
         </div>
       </div>
-      <Button onClick={scrollPrev} className="absolute left-0 top-1/2 transform -translate-y-1/2 bg-white text-black hover:bg-gray-200">
+      <Button onClick={scrollPrev} className="absolute left-0 top-1/2 transform -translate-y-1/2 bg-white text-black hover:bg-gray-200 hidden md:block">
         <ChevronLeft />
       </Button>
-      <Button onClick={scrollNext} className="absolute right-0 top-1/2 transform -translate-y-1/2 bg-white text-black hover:bg-gray-200">
+      <Button onClick={scrollNext} className="absolute right-0 top-1/2 transform -translate-y-1/2 bg-white text-black hover:bg-gray-200 hidden md:block">
         <ChevronRight />
       </Button>
     </div>
