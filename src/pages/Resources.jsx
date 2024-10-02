@@ -1,6 +1,5 @@
-import React from 'react';
+import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Grid } from "@/components/ui/grid";
 import { Button } from "@/components/ui/button";
 
 const ResourceCard = ({ title, description, link }) => (
@@ -56,11 +55,16 @@ const Resources = () => {
       <h1 className="text-3xl font-bold mb-8">Resources</h1>
       <p className="mb-8">Explore our collection of educational resources, guides, and tutorials. Whether you're a beginner or an expert, these materials will help you expand your knowledge and skills in electronics, programming, and engineering.</p>
       
-      <Grid className="gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {resources.map((resource, index) => (
-          <ResourceCard key={index} title={resource.title} description={resource.description} link={resource.link} />
+          <ResourceCard
+            key={index}
+            title={resource.title}
+            description={resource.description}
+            link={resource.link}
+          />
         ))}
-      </Grid>
+      </div>
     </div>
   );
 };
