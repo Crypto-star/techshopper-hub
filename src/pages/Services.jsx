@@ -1,13 +1,16 @@
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 
-const ServiceCard = ({ title, description }) => (
+const ServiceCard = ({ title, description, icon }) => (
   <Card className="h-full card-hover">
-    <CardHeader className="bg-gray-50 dark:bg-gray-800">
+    <CardHeader className="bg-gray-50 dark:bg-gray-800 flex items-center justify-between">
       <CardTitle className="text-xl font-semibold text-blue-600 dark:text-blue-400">{title}</CardTitle>
+      <span className="text-3xl">{icon}</span>
     </CardHeader>
-    <CardContent>
-      <p className="text-gray-700 dark:text-gray-300">{description}</p>
+    <CardContent className="flex flex-col justify-between h-full">
+      <p className="text-gray-700 dark:text-gray-300 mb-4">{description}</p>
+      <Button className="w-full mt-4">Learn More</Button>
     </CardContent>
   </Card>
 );
@@ -16,35 +19,43 @@ const Services = () => {
   const services = [
     {
       title: "3D Printing Services",
-      description: "Bring your designs to life with our high-quality 3D printing service. We offer a range of materials including PLA, ABS, and PETG, with options for different colors and finishes."
+      description: "Bring your designs to life with our high-quality 3D printing service. We offer a range of materials including PLA, ABS, and PETG, with options for different colors and finishes.",
+      icon: "🖨️"
     },
     {
       title: "PCB Design & Printing",
-      description: "From concept to finished product, our PCB design and printing service covers it all. We offer custom designs, prototyping, and full-scale manufacturing for your electronic projects."
+      description: "From concept to finished product, our PCB design and printing service covers it all. We offer custom designs, prototyping, and full-scale manufacturing for your electronic projects.",
+      icon: "🔌"
     },
     {
       title: "Laser Cutting & Engraving",
-      description: "Precision cutting and engraving for a variety of materials including wood, acrylic, and metal. Perfect for creating custom enclosures, signage, or decorative elements for your projects."
+      description: "Precision cutting and engraving for a variety of materials including wood, acrylic, and metal. Perfect for creating custom enclosures, signage, or decorative elements for your projects.",
+      icon: "✂️"
     },
     {
       title: "2D/3D Modeling",
-      description: "Our expert designers can help you create detailed 2D and 3D models for your projects. Whether it's for product design, architectural models, or visualization, we've got you covered."
+      description: "Our expert designers can help you create detailed 2D and 3D models for your projects. Whether it's for product design, architectural models, or visualization, we've got you covered.",
+      icon: "🎨"
     },
     {
       title: "Prototype Development",
-      description: "Turn your ideas into reality with our prototype development service. We can help with both mechanical and electronic prototypes, from initial concept to functional models."
+      description: "Turn your ideas into reality with our prototype development service. We can help with both mechanical and electronic prototypes, from initial concept to functional models.",
+      icon: "🛠️"
     },
     {
       title: "Software & Web Solutions",
-      description: "Need a custom app or website for your project? Our team of developers can create tailored software solutions, from embedded systems to full-stack web applications."
+      description: "Need a custom app or website for your project? Our team of developers can create tailored software solutions, from embedded systems to full-stack web applications.",
+      icon: "💻"
     },
     {
       title: "Engineering & Diploma Projects",
-      description: "Get expert guidance and support for your academic projects. We offer assistance with project planning, component selection, and implementation for a wide range of engineering disciplines."
+      description: "Get expert guidance and support for your academic projects. We offer assistance with project planning, component selection, and implementation for a wide range of engineering disciplines.",
+      icon: "🎓"
     },
     {
       title: "Startup Solutions",
-      description: "From product design to MVP development, we provide comprehensive support for tech startups. Let us help you bring your innovative ideas to market quickly and efficiently."
+      description: "From product design to MVP development, we provide comprehensive support for tech startups. Let us help you bring your innovative ideas to market quickly and efficiently.",
+      icon: "🚀"
     }
   ];
 
@@ -55,8 +66,14 @@ const Services = () => {
       
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         {services.map((service, index) => (
-          <ServiceCard key={index} title={service.title} description={service.description} />
+          <ServiceCard key={index} title={service.title} description={service.description} icon={service.icon} />
         ))}
+      </div>
+
+      <div className="mt-12 text-center">
+        <Button size="lg" className="bg-blue-600 hover:bg-blue-700 text-white">
+          Request a Custom Service
+        </Button>
       </div>
     </div>
   );
