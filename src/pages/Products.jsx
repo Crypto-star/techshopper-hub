@@ -1,28 +1,38 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Search } from 'lucide-react';
 
-const ProductCategory = ({ title, items }) => (
-  <Card className="mb-8 card-hover">
-    <CardHeader className="bg-gray-50 dark:bg-gray-800">
-      <CardTitle className="text-2xl font-semibold text-blue-600 dark:text-blue-400">{title}</CardTitle>
-    </CardHeader>
-    <CardContent>
-      <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        {items.map((item, index) => (
-          <li key={index} className="flex items-center space-x-2">
-            <span className="text-blue-500">•</span>
-            <span className="text-gray-700 dark:text-gray-300">{item}</span>
-          </li>
-        ))}
-      </ul>
-    </CardContent>
-  </Card>
-);
+const ProductCategory = ({ title, items, searchTerm }) => {
+  const filteredItems = items.filter(item =>
+    item.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  if (filteredItems.length === 0) return null;
+
+  return (
+    <Card className="mb-8 card-hover">
+      <CardHeader className="bg-gray-50 dark:bg-gray-800">
+        <CardTitle className="text-2xl font-semibold text-blue-600 dark:text-blue-400">{title}</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {filteredItems.map((item, index) => (
+            <li key={index} className="flex items-center space-x-2">
+              <span className="text-blue-500">•</span>
+              <span className="text-gray-700 dark:text-gray-300">{item}</span>
+            </li>
+          ))}
+        </ul>
+      </CardContent>
+    </Card>
+  );
+};
 
 const Products = () => {
+  const [searchTerm, setSearchTerm] = useState('');
+
   const categories = [
     {
       title: "Electronics Items",
@@ -81,6 +91,10 @@ const Products = () => {
     }
   ];
 
+  const handleSearchChange = (e) => {
+    setSearchTerm(e.target.value);
+  };
+
   return (
     <div className="page-container">
       <h1 className="section-title">Our Products</h1>
@@ -92,6 +106,8 @@ const Products = () => {
             type="text"
             placeholder="Search products..."
             className="pl-10 pr-4 py-2 rounded-full w-full"
+            value={searchTerm}
+            onChange={handleSearchChange}
           />
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
         </div>
@@ -99,7 +115,7 @@ const Products = () => {
       
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         {categories.map((category, index) => (
-          <ProductCategory key={index} title={category.title} items={category.items} />
+          <ProductCategory key={index} title={category.title} items={category.items} searchTerm={searchTerm} />
         ))}
       </div>
 
