@@ -1,11 +1,13 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState, useCallback } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { ShoppingCart, Wrench, Briefcase, BookOpen, Users, Mail, LogIn, Menu, X, Search } from 'lucide-react';
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
+  const navigate = useNavigate();
 
   const navItems = [
     { name: 'Products', path: '/products', icon: <ShoppingCart className="w-4 h-4" /> },
@@ -21,6 +23,13 @@ const Navbar = () => {
     setIsMenuOpen(!isMenuOpen);
   };
 
+  const handleSearch = useCallback((e) => {
+    e.preventDefault();
+    if (searchTerm.trim()) {
+      navigate(`/products?search=${encodeURIComponent(searchTerm.trim())}`);
+    }
+  }, [searchTerm, navigate]);
+
   return (
     <nav className="bg-white dark:bg-gray-800 shadow-md">
       <div className="container mx-auto px-4">
@@ -28,15 +37,19 @@ const Navbar = () => {
           <Link to="/" className="text-2xl font-bold text-blue-600 dark:text-blue-400">TechnoMart</Link>
           
           <div className="hidden md:flex items-center space-x-4">
-            <div className="relative">
+            <form onSubmit={handleSearch} className="relative">
               <Input
                 type="text"
                 placeholder="Search products..."
-                className="pl-10 pr-4 py-2 rounded-full"
+                className="pl-10 pr-4 py-2 w-64 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
               />
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-            </div>
-            <Button className="bg-blue-600 text-white">Search</Button>
+              <Button type="submit" className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-blue-500 text-white p-1 rounded-full">
+                <Search className="w-4 h-4" />
+              </Button>
+            </form>
           </div>
 
           <div className="hidden md:flex space-x-4">
@@ -63,14 +76,19 @@ const Navbar = () => {
       {isMenuOpen && (
         <div className="md:hidden">
           <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-white dark:bg-gray-800">
-            <div className="flex items-center p-2">
+            <form onSubmit={handleSearch} className="relative mb-4">
               <Input
                 type="text"
                 placeholder="Search products..."
-                className="pl-10 pr-4 py-2 rounded-full w-full"
+                className="pl-10 pr-4 py-2 w-full rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
               />
-              <Search className="absolute left-5 text-gray-400" />
-            </div>
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+              <Button type="submit" className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-blue-500 text-white p-1 rounded-full">
+                <Search className="w-4 h-4" />
+              </Button>
+            </form>
             {navItems.map((item) => (
               <Link
                 key={item.name}
