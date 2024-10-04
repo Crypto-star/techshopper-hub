@@ -1,3 +1,4 @@
+import React from 'react';
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -15,30 +16,34 @@ import SignIn from "./pages/SignIn";
 
 const queryClient = new QueryClient();
 
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <BrowserRouter>
-      <TooltipProvider>
-        <Toaster />
-        <div className="flex flex-col min-h-screen">
-          <Navbar />
-          <main className="flex-grow">
-            <Routes>
-              <Route path="/" element={<TechnoMart />} />
-              <Route path="/products" element={<Products />} />
-              <Route path="/services" element={<Services />} />
-              <Route path="/projects" element={<Projects />} />
-              <Route path="/resources" element={<Resources />} />
-              <Route path="/about" element={<About />} />
-              <Route path="/contact" element={<Contact />} />
-              <Route path="/signin" element={<SignIn />} />
-            </Routes>
-          </main>
-          <Footer />
-        </div>
-      </TooltipProvider>
-    </BrowserRouter>
-  </QueryClientProvider>
-);
+const App = () => {
+  return (
+    <React.StrictMode>
+      <QueryClientProvider client={queryClient}>
+        <BrowserRouter>
+          <TooltipProvider>
+            <Toaster />
+            <div className="flex flex-col min-h-screen">
+              <Navbar />
+              <main className="flex-grow">
+                <Routes>
+                  <Route path="/" element={<TechnoMart />} />
+                  <Route path="/products" element={<Products />} />
+                  <Route path="/services" element={<Services />} />
+                  <Route path="/projects" element={<Projects />} />
+                  <Route path="/resources" element={<Resources />} />
+                  <Route path="/about" element={<About />} />
+                  <Route path="/contact" element={<Contact />} />
+                  <Route path="/signin" element={<SignIn />} />
+                </Routes>
+              </main>
+              <Footer />
+            </div>
+          </TooltipProvider>
+        </BrowserRouter>
+      </QueryClientProvider>
+    </React.StrictMode>
+  );
+};
 
 export default App;
