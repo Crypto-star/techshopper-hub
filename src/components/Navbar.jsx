@@ -20,16 +20,16 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="bg-blue-600 text-white">
+    <nav className="bg-white dark:bg-gray-800 shadow-md">
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">
-          <Link to="/" className="text-xl font-bold">TechnoMart</Link>
+          <Link to="/" className="text-2xl font-bold text-blue-600 dark:text-blue-400">TechnoMart</Link>
           <div className="hidden md:flex space-x-4">
             {navItems.map((item) => (
               <Link
                 key={item.name}
                 to={item.path}
-                className="flex items-center space-x-1 hover:text-blue-200 transition-colors"
+                className="flex items-center space-x-1 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
               >
                 {item.icon}
                 <span>{item.name}</span>
@@ -41,18 +41,18 @@ const Navbar = () => {
             onClick={toggleMenu}
             aria-label="Toggle menu"
           >
-            {isMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+            {isMenuOpen ? <X className="w-6 h-6 text-gray-700 dark:text-gray-300" /> : <Menu className="w-6 h-6 text-gray-700 dark:text-gray-300" />}
           </button>
         </div>
       </div>
       {isMenuOpen && (
         <div className="md:hidden">
-          <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+          <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-white dark:bg-gray-800">
             {navItems.map((item) => (
               <Link
                 key={item.name}
                 to={item.path}
-                className="flex items-center space-x-2 text-white hover:bg-blue-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium"
+                className="flex items-center space-x-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-blue-600 dark:hover:text-blue-400 block px-3 py-2 rounded-md text-base font-medium transition-colors"
                 onClick={toggleMenu}
               >
                 {item.icon}

@@ -2,14 +2,14 @@ import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 const ProductCategory = ({ title, items }) => (
-  <Card className="mb-8">
-    <CardHeader>
-      <CardTitle>{title}</CardTitle>
+  <Card className="mb-8 card-hover">
+    <CardHeader className="bg-gray-50 dark:bg-gray-800">
+      <CardTitle className="text-2xl font-semibold text-blue-600 dark:text-blue-400">{title}</CardTitle>
     </CardHeader>
     <CardContent>
-      <ul className="list-disc pl-5">
+      <ul className="list-disc pl-5 space-y-2">
         {items.map((item, index) => (
-          <li key={index}>{item}</li>
+          <li key={index} className="text-gray-700 dark:text-gray-300">{item}</li>
         ))}
       </ul>
     </CardContent>
@@ -71,9 +71,9 @@ const Products = () => {
   ];
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold mb-8">Our Products</h1>
-      <p className="mb-8">Discover our wide range of electronic components, DIY kits, STEM toys, and educational resources. Whether you're a beginner or an expert, we have everything you need to bring your ideas to life!</p>
+    <div className="page-container">
+      <h1 className="section-title">Our Products</h1>
+      <p className="text-center text-gray-600 dark:text-gray-300 mb-8">Discover our wide range of electronic components, DIY kits, STEM toys, and educational resources. Whether you're a beginner or an expert, we have everything you need to bring your ideas to life!</p>
       
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         {categories.map((category, index) => (

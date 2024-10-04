@@ -2,12 +2,12 @@ import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 const ServiceCard = ({ title, description }) => (
-  <Card>
-    <CardHeader>
-      <CardTitle>{title}</CardTitle>
+  <Card className="h-full card-hover">
+    <CardHeader className="bg-gray-50 dark:bg-gray-800">
+      <CardTitle className="text-xl font-semibold text-blue-600 dark:text-blue-400">{title}</CardTitle>
     </CardHeader>
     <CardContent>
-      <p>{description}</p>
+      <p className="text-gray-700 dark:text-gray-300">{description}</p>
     </CardContent>
   </Card>
 );
@@ -49,9 +49,9 @@ const Services = () => {
   ];
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold mb-8">Our Services</h1>
-      <p className="mb-8">At TechnoMart, we offer a wide range of services to support your projects, from concept to completion. Whether you're a hobbyist, student, or professional, our expert team is here to help you succeed.</p>
+    <div className="page-container">
+      <h1 className="section-title">Our Services</h1>
+      <p className="text-center text-gray-600 dark:text-gray-300 mb-8">At TechnoMart, we offer a wide range of services to support your projects, from concept to completion. Whether you're a hobbyist, student, or professional, our expert team is here to help you succeed.</p>
       
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         {services.map((service, index) => (

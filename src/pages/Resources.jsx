@@ -3,13 +3,13 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 
 const ResourceCard = ({ title, description, link }) => (
-  <Card>
-    <CardHeader>
-      <CardTitle>{title}</CardTitle>
+  <Card className="h-full card-hover">
+    <CardHeader className="bg-gray-50 dark:bg-gray-800">
+      <CardTitle className="text-xl font-semibold text-blue-600 dark:text-blue-400">{title}</CardTitle>
     </CardHeader>
-    <CardContent>
-      <p className="mb-4">{description}</p>
-      <Button asChild>
+    <CardContent className="flex flex-col justify-between h-full">
+      <p className="mb-4 text-gray-700 dark:text-gray-300">{description}</p>
+      <Button asChild className="w-full mt-4">
         <a href={link} target="_blank" rel="noopener noreferrer">Learn More</a>
       </Button>
     </CardContent>
@@ -51,11 +51,11 @@ const Resources = () => {
   ];
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold mb-8">Resources</h1>
-      <p className="mb-8">Explore our collection of educational resources, guides, and tutorials. Whether you're a beginner or an expert, these materials will help you expand your knowledge and skills in electronics, programming, and engineering.</p>
+    <div className="page-container">
+      <h1 className="section-title">Resources</h1>
+      <p className="text-center text-gray-600 dark:text-gray-300 mb-8">Explore our collection of educational resources, guides, and tutorials. Whether you're a beginner or an expert, these materials will help you expand your knowledge and skills in electronics, programming, and engineering.</p>
       
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         {resources.map((resource, index) => (
           <ResourceCard
             key={index}

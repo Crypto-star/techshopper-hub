@@ -2,13 +2,13 @@ import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 const ProjectCard = ({ title, description, outcome }) => (
-  <Card className="mb-8">
-    <CardHeader>
-      <CardTitle>{title}</CardTitle>
+  <Card className="mb-8 card-hover">
+    <CardHeader className="bg-gray-50 dark:bg-gray-800">
+      <CardTitle className="text-2xl font-semibold text-blue-600 dark:text-blue-400">{title}</CardTitle>
     </CardHeader>
     <CardContent>
-      <p className="mb-4">{description}</p>
-      <p className="font-semibold">Outcome: {outcome}</p>
+      <p className="mb-4 text-gray-700 dark:text-gray-300">{description}</p>
+      <p className="font-semibold text-green-600 dark:text-green-400">Outcome: {outcome}</p>
     </CardContent>
   </Card>
 );
@@ -43,9 +43,9 @@ const Projects = () => {
   ];
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold mb-8">Projects & Case Studies</h1>
-      <p className="mb-8">Explore our successful projects and collaborations. These case studies showcase how we've helped our clients and partners bring their ideas to life, solve complex problems, and achieve impressive results.</p>
+    <div className="page-container">
+      <h1 className="section-title">Projects & Case Studies</h1>
+      <p className="text-center text-gray-600 dark:text-gray-300 mb-8">Explore our successful projects and collaborations. These case studies showcase how we've helped our clients and partners bring their ideas to life, solve complex problems, and achieve impressive results.</p>
       
       {projects.map((project, index) => (
         <ProjectCard key={index} title={project.title} description={project.description} outcome={project.outcome} />
