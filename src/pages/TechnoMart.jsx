@@ -1,8 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
-import Navbar from '../components/Navbar';
-import Footer from '../components/Footer';
 import CategoryGrid from '../components/CategoryGrid';
 import FeaturedProducts from '../components/FeaturedProducts';
 import GoogleReviews from '../components/GoogleReviews';
@@ -13,7 +11,6 @@ import BlogPosts from '../components/BlogPosts';
 const TechnoMart = () => {
   return (
     <div className="flex flex-col min-h-screen bg-gray-100">
-      <Navbar />
       <main className="flex-grow">
         <div className="container mx-auto px-4 py-8">
           <section className="mb-12">
@@ -34,7 +31,6 @@ const TechnoMart = () => {
           <BlogPosts />
         </div>
       </main>
-      <Footer />
     </div>
   );
 };
