@@ -1,13 +1,16 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Search } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 const ProductCategory = ({ title, items, searchTerm }) => {
-  const filteredItems = items.filter(item =>
-    item.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const filteredItems = useMemo(() => {
+    return items.filter(item =>
+      item.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+  }, [items, searchTerm]);
 
   if (filteredItems.length === 0) return null;
 
@@ -95,6 +98,15 @@ const Products = () => {
     setSearchTerm(e.target.value);
   };
 
+  const filteredCategories = useMemo(() => {
+    if (searchTerm === '') return categories;
+    return categories.filter(category => 
+      category.items.some(item => 
+        item.toLowerCase().includes(searchTerm.toLowerCase())
+      )
+    );
+  }, [categories, searchTerm]);
+
   return (
     <div className="page-container">
       <h1 className="section-title">Our Products</h1>
@@ -114,19 +126,23 @@ const Products = () => {
       </div>
       
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-        {categories.map((category, index) => (
+        {filteredCategories.map((category, index) => (
           <ProductCategory key={index} title={category.title} items={category.items} searchTerm={searchTerm} />
         ))}
       </div>
 
+      {filteredCategories.length === 0 && (
+        <p className="text-center text-gray-600 dark:text-gray-300 mt-8">No products found matching your search.</p>
+      )}
+
       <div className="mt-12 text-center">
         <Button asChild size="lg" className="bg-blue-600 hover:bg-blue-700 text-white">
-          <a href="#" className="inline-flex items-center">
+          <Link to="/products" className="inline-flex items-center">
             View All Products
             <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 ml-2" viewBox="0 0 20 20" fill="currentColor">
               <path fillRule="evenodd" d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z" clipRule="evenodd" />
             </svg>
-          </a>
+          </Link>
         </Button>
       </div>
     </div>
