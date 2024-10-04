@@ -26,7 +26,7 @@ const Navbar = () => {
   const handleSearch = useCallback((e) => {
     e.preventDefault();
     if (searchTerm.trim()) {
-      navigate(`/products?search=${encodeURIComponent(searchTerm.trim())}`);
+      navigate(`/search?q=${encodeURIComponent(searchTerm.trim())}`);
     }
   }, [searchTerm, navigate]);
 
@@ -40,7 +40,7 @@ const Navbar = () => {
             <form onSubmit={handleSearch} className="relative">
               <Input
                 type="text"
-                placeholder="Search products..."
+                placeholder="Search entire site..."
                 className="pl-10 pr-4 py-2 w-64 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
@@ -79,7 +79,7 @@ const Navbar = () => {
             <form onSubmit={handleSearch} className="relative mb-4">
               <Input
                 type="text"
-                placeholder="Search products..."
+                placeholder="Search entire site..."
                 className="pl-10 pr-4 py-2 w-full rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}

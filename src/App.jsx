@@ -13,6 +13,7 @@ import Resources from "./pages/Resources";
 import About from "./pages/About";
 import Contact from "./pages/Contact";
 import SignIn from "./pages/SignIn";
+import SearchResults from "./pages/SearchResults";
 
 const queryClient = new QueryClient();
 
@@ -35,6 +36,7 @@ const App = () => {
                   <Route path="/about" element={<About />} />
                   <Route path="/contact" element={<Contact />} />
                   <Route path="/signin" element={<SignIn />} />
+                  <Route path="/search" element={<SearchResults />} />
                 </Routes>
               </main>
               <Footer />
