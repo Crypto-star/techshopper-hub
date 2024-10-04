@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ShoppingCart, Wrench, Briefcase, BookOpen, Users, Mail, LogIn, Menu, X } from 'lucide-react';
+import { ShoppingCart, Wrench, Briefcase, BookOpen, Users, Mail, LogIn, Menu, X, Search } from 'lucide-react';
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -24,6 +26,19 @@ const Navbar = () => {
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">
           <Link to="/" className="text-2xl font-bold text-blue-600 dark:text-blue-400">TechnoMart</Link>
+          
+          <div className="hidden md:flex items-center space-x-4">
+            <div className="relative">
+              <Input
+                type="text"
+                placeholder="Search products..."
+                className="pl-10 pr-4 py-2 rounded-full"
+              />
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+            </div>
+            <Button className="bg-blue-600 text-white">Search</Button>
+          </div>
+
           <div className="hidden md:flex space-x-4">
             {navItems.map((item) => (
               <Link
@@ -48,6 +63,14 @@ const Navbar = () => {
       {isMenuOpen && (
         <div className="md:hidden">
           <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-white dark:bg-gray-800">
+            <div className="flex items-center p-2">
+              <Input
+                type="text"
+                placeholder="Search products..."
+                className="pl-10 pr-4 py-2 rounded-full w-full"
+              />
+              <Search className="absolute left-5 text-gray-400" />
+            </div>
             {navItems.map((item) => (
               <Link
                 key={item.name}
