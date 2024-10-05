@@ -16,6 +16,7 @@ import Resources from "./pages/Resources";
 import About from "./pages/About";
 import Contact from "./pages/Contact";
 import SignIn from "./pages/SignIn";
+import VerifyOTP from "./pages/VerifyOTP";
 import Profile from "./pages/Profile";
 import SearchResults from "./pages/SearchResults";
 import Cart from "./pages/Cart";
@@ -44,6 +45,7 @@ const App = () => {
                       <Route path="/about" element={<About />} />
                       <Route path="/contact" element={<Contact />} />
                       <Route path="/signin" element={<SignIn />} />
+                      <Route path="/verify-otp" element={<VerifyOTP />} />
                       <Route path="/profile" element={<Profile />} />
                       <Route path="/search" element={<SearchResults />} />
                       <Route path="/cart" element={<Cart />} />

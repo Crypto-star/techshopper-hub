@@ -1,15 +1,23 @@
 import React, { useState, useCallback } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { ShoppingCart, Wrench, Briefcase, BookOpen, Users, Mail, LogIn, Menu, X, Search } from 'lucide-react';
+import { ShoppingCart, Wrench, Briefcase, BookOpen, Users, Mail, LogIn, Menu, X, Search, User, LogOut } from 'lucide-react';
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useCart } from '../contexts/CartContext';
+import { useSupabaseAuth } from '../integrations/supabase/auth';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const navigate = useNavigate();
   const { cart } = useCart();
+  const { session, logout } = useSupabaseAuth();
 
   const navItems = [
     { name: 'Products', path: '/products', icon: <ShoppingCart className="w-4 h-4" /> },
@@ -18,7 +26,6 @@ const Navbar = () => {
     { name: 'Resources', path: '/resources', icon: <BookOpen className="w-4 h-4" /> },
     { name: 'About', path: '/about', icon: <Users className="w-4 h-4" /> },
     { name: 'Contact', path: '/contact', icon: <Mail className="w-4 h-4" /> },
-    { name: 'Sign In', path: '/signin', icon: <LogIn className="w-4 h-4" /> },
   ];
 
   const toggleMenu = () => {
@@ -33,6 +40,11 @@ const Navbar = () => {
   }, [searchTerm, navigate]);
 
   const cartItemCount = cart.reduce((sum, item) => sum + item.quantity, 0);
+
+  const handleLogout = async () => {
+    await logout();
+    navigate('/');
+  };
 
   return (
     <nav className="bg-white dark:bg-gray-800 shadow-md">
@@ -67,6 +79,33 @@ const Navbar = () => {
                 <span>{item.name}</span>
               </Link>
             ))}
+            {session ? (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" className="flex items-center space-x-1">
+                    <User className="w-4 h-4" />
+                    <span>{session.user.user_metadata.name}</span>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent>
+                  <DropdownMenuItem onSelect={() => navigate('/profile')}>
+                    Profile
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onSelect={handleLogout}>
+                    <LogOut className="w-4 h-4 mr-2" />
+                    Logout
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            ) : (
+              <Link
+                to="/signin"
+                className="flex items-center space-x-1 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+              >
+                <LogIn className="w-4 h-4" />
+                <span>Sign In</span>
+              </Link>
+            )}
             <Link to="/cart" className="relative">
               <ShoppingCart className="w-6 h-6 text-gray-700 dark:text-gray-300" />
               {cartItemCount > 0 && (
@@ -112,6 +151,34 @@ const Navbar = () => {
                 <span>{item.name}</span>
               </Link>
             ))}
+            {session ? (
+              <>
+                <Link
+                  to="/profile"
+                  className="flex items-center space-x-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-blue-600 dark:hover:text-blue-400 block px-3 py-2 rounded-md text-base font-medium transition-colors"
+                  onClick={toggleMenu}
+                >
+                  <User className="w-4 h-4" />
+                  <span>{session.user.user_metadata.name}</span>
+                </Link>
+                <button
+                  onClick={handleLogout}
+                  className="flex items-center space-x-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-blue-600 dark:hover:text-blue-400 block px-3 py-2 rounded-md text-base font-medium transition-colors w-full text-left"
+                >
+                  <LogOut className="w-4 h-4" />
+                  <span>Logout</span>
+                </button>
+              </>
+            ) : (
+              <Link
+                to="/signin"
+                className="flex items-center space-x-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-blue-600 dark:hover:text-blue-400 block px-3 py-2 rounded-md text-base font-medium transition-colors"
+                onClick={toggleMenu}
+              >
+                <LogIn className="w-4 h-4" />
+                <span>Sign In</span>
+              </Link>
+            )}
             <Link
               to="/cart"
               className="flex items-center space-x-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-blue-600 dark:hover:text-blue-400 block px-3 py-2 rounded-md text-base font-medium transition-colors"
