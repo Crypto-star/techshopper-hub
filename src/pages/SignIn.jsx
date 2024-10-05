@@ -19,19 +19,20 @@ const SignIn = () => {
   const navigate = useNavigate();
 
   const sendOTP = async (isSignUp = false) => {
-    const { error } = isSignUp
-      ? await supabase.auth.signUp({ 
-          phone,
-          password,
-          options: { data: { name } }
-        })
-      : await supabase.auth.signInWithOtp({ phone });
+    try {
+      const { error } = isSignUp
+        ? await supabase.auth.signUp({ 
+            phone,
+            password,
+            options: { data: { name } }
+          })
+        : await supabase.auth.signInWithOtp({ phone });
 
-    if (error) {
-      toast.error(error.message);
-    } else {
+      if (error) throw error;
       setIsVerifying(true);
       toast.success('A verification code has been sent to your phone.');
+    } catch (error) {
+      toast.error(error.message);
     }
   };
 
@@ -65,7 +66,13 @@ const SignIn = () => {
       toast.success('Successfully verified!');
       navigate('/profile');
     } catch (error) {
-      toast.error(error.message);
+      if (error.message.includes('Token has expired or is invalid')) {
+        toast.error('The verification code has expired. Please request a new one.');
+        setIsVerifying(false);
+        setOtp('');
+      } else {
+        toast.error(error.message);
+      }
     }
   };
 
