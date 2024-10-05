@@ -8,7 +8,7 @@ import { Link, useLocation } from 'react-router-dom';
 const ProductCategory = ({ title, items, searchTerm }) => {
   const filteredItems = useMemo(() => {
     return items.filter(item =>
-      item.toLowerCase().includes(searchTerm.toLowerCase())
+      item.name.toLowerCase().includes(searchTerm.toLowerCase())
     );
   }, [items, searchTerm]);
 
@@ -24,7 +24,9 @@ const ProductCategory = ({ title, items, searchTerm }) => {
           {filteredItems.map((item, index) => (
             <li key={index} className="flex items-center space-x-2">
               <span className="text-blue-500">•</span>
-              <span className="text-gray-700 dark:text-gray-300">{item}</span>
+              <Link to={`/products/${item.id}`} className="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400">
+                {item.name}
+              </Link>
             </li>
           ))}
         </ul>
@@ -49,12 +51,12 @@ const Products = () => {
     {
       title: "Electronics Items",
       items: [
-        "Arduino Uno Rev3 - The perfect board for your next project",
-        "Raspberry Pi 4 Model B - Powerful single-board computer",
-        "DHT22 Temperature and Humidity Sensor - Accurate and reliable",
-        "HC-SR04 Ultrasonic Sensor - For distance measurement projects",
-        "LM2596 DC-DC Buck Converter - Efficient power supply solution",
-        "NodeMCU ESP8266 - WiFi-enabled development board"
+        { id: "arduino-uno", name: "Arduino Uno Rev3 - The perfect board for your next project" },
+        { id: "raspberry-pi-4", name: "Raspberry Pi 4 Model B - Powerful single-board computer" },
+        { id: "dht22-sensor", name: "DHT22 Temperature and Humidity Sensor - Accurate and reliable" },
+        { id: "hc-sr04-sensor", name: "HC-SR04 Ultrasonic Sensor - For distance measurement projects" },
+        { id: "lm2596-converter", name: "LM2596 DC-DC Buck Converter - Efficient power supply solution" },
+        { id: "nodemcu-esp8266", name: "NodeMCU ESP8266 - WiFi-enabled development board" }
       ]
     },
     {

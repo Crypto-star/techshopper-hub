@@ -7,6 +7,7 @@ import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import TechnoMart from "./pages/TechnoMart";
 import Products from "./pages/Products";
+import ProductPage from "./components/ProductPage";
 import Services from "./pages/Services";
 import Projects from "./pages/Projects";
 import Resources from "./pages/Resources";
@@ -30,6 +31,7 @@ const App = () => {
                 <Routes>
                   <Route path="/" element={<TechnoMart />} />
                   <Route path="/products" element={<Products />} />
+                  <Route path="/products/:productId" element={<ProductPage />} />
                   <Route path="/services" element={<Services />} />
                   <Route path="/projects" element={<Projects />} />
                   <Route path="/resources" element={<Resources />} />
