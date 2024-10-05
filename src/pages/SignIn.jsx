@@ -17,9 +17,14 @@ const SignIn = () => {
   const { session, loading } = useSupabaseAuth();
   const navigate = useNavigate();
 
-  const handleSignIn = async (e) => {
-    e.preventDefault();
-    const { error } = await supabase.auth.signInWithOtp({ phone });
+  const sendOTP = async (isSignUp = false) => {
+    const { error } = isSignUp
+      ? await supabase.auth.signUp({ 
+          phone,
+          options: { data: { name } }
+        })
+      : await supabase.auth.signInWithOtp({ phone });
+
     if (error) {
       toast.error(error.message);
     } else {
@@ -28,33 +33,35 @@ const SignIn = () => {
     }
   };
 
-  const handleSignUp = async (e) => {
+  const handleSignIn = (e) => {
     e.preventDefault();
-    const { error } = await supabase.auth.signUp({ 
-      phone,
-      options: {
-        data: {
-          name
-        }
-      }
-    });
-    if (error) {
-      toast.error(error.message);
-    } else {
-      setIsVerifying(true);
-      toast.success('A verification code has been sent to your phone.');
-    }
+    sendOTP();
+  };
+
+  const handleSignUp = (e) => {
+    e.preventDefault();
+    sendOTP(true);
   };
 
   const handleVerify = async (e) => {
     e.preventDefault();
-    const { error, data } = await supabase.auth.verifyOtp({ phone, token: otp, type: 'sms' });
-    if (error) {
-      toast.error(error.message);
-    } else {
+    try {
+      const { error, data } = await supabase.auth.verifyOtp({ phone, token: otp, type: 'sms' });
+      if (error) throw error;
       toast.success('Successfully verified!');
       navigate('/profile');
+    } catch (error) {
+      if (error.message.includes('Token has expired or is invalid')) {
+        toast.error('The verification code has expired or is invalid. Please request a new one.');
+      } else {
+        toast.error(error.message);
+      }
     }
+  };
+
+  const handleResendOTP = () => {
+    setOtp('');
+    sendOTP();
   };
 
   if (loading) return <div>Loading...</div>;
@@ -106,6 +113,7 @@ const SignIn = () => {
                 />
               </div>
               <Button type="submit" className="w-full">Verify OTP</Button>
+              <Button type="button" variant="outline" className="w-full" onClick={handleResendOTP}>Resend OTP</Button>
             </form>
           )}
         </CardContent>
