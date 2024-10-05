@@ -1,4 +1,5 @@
-import React, { useState, useMemo, useCallback, useEffect } from 'react';
+import React, { useState, useMemo, useCallback } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -36,81 +37,31 @@ const ProductCategory = ({ title, items, searchTerm }) => {
   );
 };
 
+const fetchProducts = async () => {
+  // Replace this with your actual API endpoint
+  const response = await fetch('https://api.example.com/products');
+  if (!response.ok) {
+    throw new Error('Network response was not ok');
+  }
+  return response.json();
+};
+
 const Products = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const location = useLocation();
 
-  useEffect(() => {
-    const searchParams = new URLSearchParams(location.search);
-    const search = searchParams.get('search');
-    if (search) {
-      setSearchTerm(search);
-    }
-  }, [location.search]);
-
-  const categories = [
-    {
-      title: "Electronics Items",
-      items: [
-        { id: "arduino-uno", name: "Arduino Uno Rev3 - The perfect board for your next project" },
-        { id: "raspberry-pi-4", name: "Raspberry Pi 4 Model B - Powerful single-board computer" },
-        { id: "dht22-sensor", name: "DHT22 Temperature and Humidity Sensor - Accurate and reliable" },
-        { id: "hc-sr04-sensor", name: "HC-SR04 Ultrasonic Sensor - For distance measurement projects" },
-        { id: "lm2596-converter", name: "LM2596 DC-DC Buck Converter - Efficient power supply solution" },
-        { id: "nodemcu-esp8266", name: "NodeMCU ESP8266 - WiFi-enabled development board" }
-      ]
-    },
-    {
-      title: "DIY Kits",
-      items: [
-        { id: "smart-home-kit", name: "Smart Home Automation Kit - Control your home with ease" },
-        { id: "robot-car-kit", name: "Arduino-based Robot Car Kit - Build your own programmable robot" },
-        { id: "weather-station-kit", name: "IoT Weather Station Kit - Monitor local weather conditions" },
-        { id: "solar-charging-kit", name: "Solar Power Charging Kit - Harness renewable energy" },
-        { id: "electronic-piano-kit", name: "Electronic Piano Kit - Create your own musical instrument" },
-        { id: "hydroponic-kit", name: "Hydroponic Garden System Kit - Grow plants without soil" }
-      ]
-    },
-    {
-      title: "STEM Kits & Toys",
-      items: [
-        { id: "snap-circuits", name: "Snap Circuits Pro SC-500 - Learn electronics through fun projects" },
-        { id: "sphero-bolt", name: "Sphero BOLT - Programmable robotic ball for coding adventures" },
-        { id: "makeblock-mbot", name: "Makeblock mBot - STEM educational robot kit" },
-        { id: "ozobot-bit", name: "Ozobot Bit Coding Robot - Tiny but mighty coding companion" },
-        { id: "lego-mindstorms", name: "LEGO Mindstorms Robot Inventor - Build and program advanced robots" },
-        { id: "microbit-go", name: "Micro:bit Go Bundle - Pocket-sized computer for learning coding" }
-      ]
-    },
-    {
-      title: "Prototyping Tools",
-      items: [
-        { id: "solderless-breadboard", name: "Solderless Breadboard 830 Point - Perfect for circuit prototyping" },
-        { id: "jumper-wire-kit", name: "Jumper Wire Kit - 120pcs Multicolored" },
-        { id: "hakko-soldering-station", name: "Hakko FX888D-23BY Digital Soldering Station" },
-        { id: "fluke-multimeter", name: "Fluke 117 Electricians True RMS Multimeter" },
-        { id: "elegoo-3d-printer-filament", name: "ELEGOO 3D Printer Filament PLA 1.75mm" },
-        { id: "pcb-prototype-board", name: "PCB Prototype Board Kit - Various sizes for different projects" }
-      ]
-    },
-    {
-      title: "Educational Resources",
-      items: [
-        { id: "arduino-fundamentals", name: "Arduino Programming Fundamentals - Comprehensive e-book" },
-        { id: "iot-introduction", name: "Introduction to IoT - Online video course" },
-        { id: "pcb-design-mastery", name: "PCB Design Mastery - Step-by-step tutorial series" },
-        { id: "robotics-beginners", name: "Robotics for Beginners - Interactive learning platform" },
-        { id: "advanced-sensor-applications", name: "Advanced Sensor Applications - Downloadable project guide" },
-        { id: "machine-learning-raspberry-pi", name: "Machine Learning with Raspberry Pi - Hands-on course" }
-      ]
-    }
-  ];
+  const { data: categories, isLoading, isError } = useQuery({
+    queryKey: ['products'],
+    queryFn: fetchProducts,
+    staleTime: 60000, // 1 minute
+  });
 
   const handleSearchChange = useCallback((e) => {
     setSearchTerm(e.target.value);
   }, []);
 
   const filteredCategories = useMemo(() => {
+    if (!categories) return [];
     if (searchTerm === '') return categories;
     return categories.filter(category => 
       category.items.some(item => 
@@ -119,6 +70,9 @@ const Products = () => {
       )
     );
   }, [categories, searchTerm]);
+
+  if (isLoading) return <div>Loading...</div>;
+  if (isError) return <div>Error fetching products</div>;
 
   return (
     <div className="page-container">
