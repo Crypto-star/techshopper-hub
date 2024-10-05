@@ -9,6 +9,7 @@ import { toast } from 'sonner';
 
 const VerifyOTP = () => {
   const [otp, setOtp] = useState('');
+  const [isVerifying, setIsVerifying] = useState(false);
   const [isResending, setIsResending] = useState(false);
   const { session } = useSupabaseAuth();
   const navigate = useNavigate();
@@ -17,6 +18,7 @@ const VerifyOTP = () => {
 
   const handleVerify = async (e) => {
     e.preventDefault();
+    setIsVerifying(true);
     try {
       const { error, data } = await supabase.auth.verifyOtp({
         phone,
@@ -36,7 +38,13 @@ const VerifyOTP = () => {
       navigate('/');
     } catch (error) {
       console.error('Verification error:', error);
-      toast.error(error.message || 'Verification failed. Please try again.');
+      if (error.message.includes('Token has expired or is invalid')) {
+        toast.error('OTP has expired. Please request a new one.');
+      } else {
+        toast.error(error.message || 'Verification failed. Please try again.');
+      }
+    } finally {
+      setIsVerifying(false);
     }
   };
 
@@ -52,6 +60,7 @@ const VerifyOTP = () => {
 
       if (error) throw error;
       toast.success('A new verification code has been sent to your phone.');
+      setOtp(''); // Clear the OTP input
     } catch (error) {
       console.error('Resend OTP error:', error);
       toast.error('Failed to resend OTP: ' + (error.message || 'Unknown error'));
@@ -83,13 +92,15 @@ const VerifyOTP = () => {
                 </InputOTPGroup>
               )}
             />
-            <Button type="submit" className="w-full">Verify OTP</Button>
+            <Button type="submit" className="w-full" disabled={isVerifying || isResending}>
+              {isVerifying ? 'Verifying...' : 'Verify OTP'}
+            </Button>
             <Button 
               type="button" 
               variant="outline" 
               className="w-full" 
               onClick={handleResendOTP}
-              disabled={isResending}
+              disabled={isVerifying || isResending}
             >
               {isResending ? 'Resending...' : 'Resend OTP'}
             </Button>
