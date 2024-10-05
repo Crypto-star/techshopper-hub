@@ -1,5 +1,5 @@
 import React from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useCart } from '../contexts/CartContext';
@@ -8,8 +8,8 @@ import { toast } from 'sonner';
 const ProductPage = () => {
   const { productId } = useParams();
   const { addToCart } = useCart();
+  const navigate = useNavigate();
 
-  // This is a mock product data. In a real application, you would fetch this data based on the productId.
   const product = {
     id: productId,
     name: "Arduino Uno Rev3",
@@ -31,6 +31,11 @@ const ProductPage = () => {
     toast.success('Product added to cart');
   };
 
+  const handleBuyNow = () => {
+    addToCart(product);
+    navigate('/cart');
+  };
+
   return (
     <div className="container mx-auto px-4 py-8">
       <Card className="mb-8">
@@ -50,7 +55,10 @@ const ProductPage = () => {
                 <li key={index} className="text-gray-700">{feature}</li>
               ))}
             </ul>
-            <Button className="w-full md:w-auto" onClick={handleAddToCart}>Add to Cart</Button>
+            <div className="flex space-x-4">
+              <Button className="flex-1" onClick={handleAddToCart}>Add to Cart</Button>
+              <Button className="flex-1" variant="secondary" onClick={handleBuyNow}>Buy Now</Button>
+            </div>
           </div>
         </CardContent>
       </Card>
