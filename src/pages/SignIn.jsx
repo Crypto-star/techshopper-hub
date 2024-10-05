@@ -9,17 +9,16 @@ import { supabase } from '../integrations/supabase/supabase';
 import { toast } from 'sonner';
 
 const SignIn = () => {
-  const [email, setEmail] = useState('');
+  const [phone, setPhone] = useState('');
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
-  const [phone, setPhone] = useState('');
   const [isVerifying, setIsVerifying] = useState(false);
   const { session, loading } = useSupabaseAuth();
   const navigate = useNavigate();
 
   const handleSignIn = async (e) => {
     e.preventDefault();
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    const { error } = await supabase.auth.signInWithPassword({ phone, password });
     if (error) {
       toast.error(error.message);
     } else {
@@ -30,24 +29,19 @@ const SignIn = () => {
   const handleSignUp = async (e) => {
     e.preventDefault();
     const { error } = await supabase.auth.signUp({ 
-      email, 
+      phone, 
       password,
       options: {
         data: {
-          name,
-          phone
+          name
         }
       }
     });
     if (error) {
-      if (error.message.includes('email_address_not_authorized')) {
-        toast.error('This email address is not authorized for sign-up. Please contact support or use an authorized email.');
-      } else {
-        toast.error(error.message);
-      }
+      toast.error(error.message);
     } else {
       setIsVerifying(true);
-      toast.success('If your email is authorized, you will receive a verification link. Please check your email.');
+      toast.success('A verification code has been sent to your phone. Please verify your account.');
     }
   };
 
@@ -69,7 +63,7 @@ const SignIn = () => {
             </TabsList>
             <TabsContent value="signin">
               <form onSubmit={handleSignIn} className="space-y-4">
-                <Input type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} required />
+                <Input type="tel" placeholder="Phone Number" value={phone} onChange={(e) => setPhone(e.target.value)} required />
                 <Input type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} required />
                 <Button type="submit" className="w-full">Sign In</Button>
               </form>
@@ -77,14 +71,13 @@ const SignIn = () => {
             <TabsContent value="signup">
               <form onSubmit={handleSignUp} className="space-y-4">
                 <Input type="text" placeholder="Full Name" value={name} onChange={(e) => setName(e.target.value)} required />
-                <Input type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} required />
-                <Input type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} required />
                 <Input type="tel" placeholder="Phone Number" value={phone} onChange={(e) => setPhone(e.target.value)} required />
+                <Input type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} required />
                 <Button type="submit" className="w-full">Sign Up</Button>
               </form>
               {isVerifying && (
                 <p className="mt-4 text-sm text-gray-600">
-                  If your email is authorized, you will receive a verification link. Please check your email.
+                  A verification code has been sent to your phone. Please verify your account.
                 </p>
               )}
             </TabsContent>

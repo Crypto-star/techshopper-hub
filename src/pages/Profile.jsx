@@ -17,7 +17,7 @@ const Profile = () => {
   useEffect(() => {
     if (session?.user) {
       setName(session.user.user_metadata.name || '');
-      setPhone(session.user.user_metadata.phone || '');
+      setPhone(session.user.phone || '');
       setOccupation(session.user.user_metadata.occupation || '');
     }
   }, [session]);
@@ -25,7 +25,8 @@ const Profile = () => {
   const handleUpdateProfile = async (e) => {
     e.preventDefault();
     const { error } = await supabase.auth.updateUser({
-      data: { name, phone, occupation }
+      phone: phone,
+      data: { name, occupation }
     });
     if (error) {
       toast.error(error.message);
