@@ -10,14 +10,19 @@ import { toast } from 'sonner';
 const SignIn = () => {
   const [fullName, setFullName] = useState('');
   const [phone, setPhone] = useState('');
+  const [password, setPassword] = useState('');
   const { session, loading } = useSupabaseAuth();
   const navigate = useNavigate();
 
   const sendOTP = async (e) => {
     e.preventDefault();
     try {
+      if (password.length < 6) {
+        throw new Error('Password must be at least 6 characters long');
+      }
       const { error } = await supabase.auth.signUp({ 
         phone,
+        password,
         options: { data: { name: fullName } }
       });
 
@@ -54,6 +59,14 @@ const SignIn = () => {
               value={phone} 
               onChange={(e) => setPhone(e.target.value)} 
               required 
+            />
+            <Input 
+              type="password" 
+              placeholder="Password" 
+              value={password} 
+              onChange={(e) => setPassword(e.target.value)} 
+              required 
+              minLength={6}
             />
             <Button type="submit" className="w-full">Send OTP</Button>
           </form>
