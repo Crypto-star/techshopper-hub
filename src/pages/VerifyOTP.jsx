@@ -35,11 +35,8 @@ const VerifyOTP = () => {
       toast.success('Successfully verified!');
       navigate('/');
     } catch (error) {
-      if (error.message.includes('Token has expired or is invalid')) {
-        toast.error('The verification code has expired or is invalid. Please try again or request a new code.');
-      } else {
-        toast.error(error.message);
-      }
+      console.error('Verification error:', error);
+      toast.error(error.message || 'Verification failed. Please try again.');
     }
   };
 
@@ -56,7 +53,8 @@ const VerifyOTP = () => {
       if (error) throw error;
       toast.success('A new verification code has been sent to your phone.');
     } catch (error) {
-      toast.error('Failed to resend OTP: ' + error.message);
+      console.error('Resend OTP error:', error);
+      toast.error('Failed to resend OTP: ' + (error.message || 'Unknown error'));
     } finally {
       setIsResending(false);
     }
