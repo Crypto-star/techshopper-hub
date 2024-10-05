@@ -46,7 +46,11 @@ const SignIn = () => {
   const handleVerify = async (e) => {
     e.preventDefault();
     try {
-      const { error, data } = await supabase.auth.verifyOtp({ phone, token: otp, type: 'sms' });
+      const { error, data } = await supabase.auth.verifyOtp({
+        phone,
+        token: otp,
+        type: 'sms'
+      });
       if (error) throw error;
       toast.success('Successfully verified!');
       navigate('/profile');
