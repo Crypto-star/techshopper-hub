@@ -128,7 +128,13 @@ const SignIn = () => {
                   render={({ slots }) => (
                     <InputOTPGroup>
                       {slots.map((slot, index) => (
-                        <InputOTPSlot key={index} {...slot} />
+                        <InputOTPSlot key={index} {...slot}>
+                          {({ char }) => (
+                            <span className="text-center w-full text-lg">
+                              {char}
+                            </span>
+                          )}
+                        </InputOTPSlot>
                       ))}
                     </InputOTPGroup>
                   )}
