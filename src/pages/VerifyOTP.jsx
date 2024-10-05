@@ -1,8 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp";
 import { useSupabaseAuth } from '../integrations/supabase/auth';
 import { supabase } from '../integrations/supabase/supabase';
 import { toast } from 'sonner';
@@ -42,9 +40,13 @@ const VerifyOTP = () => {
 
   const handleVerificationError = (error) => {
     if (error.message.includes('Token has expired or is invalid')) {
-      toast.error('OTP has expired. Please request a new one.');
+      toast.error('OTP has expired or is invalid. Please request a new one.');
+    } else if (error.message.includes('Invalid phone number')) {
+      toast.error('Invalid phone number. Please check and try again.');
+    } else if (error.message.includes('Too many requests')) {
+      toast.error('Too many attempts. Please try again later.');
     } else {
-      toast.error(error.message || 'Verification failed. Please try again.');
+      toast.error('Verification failed. Please try again.');
     }
   };
 
@@ -59,13 +61,22 @@ const VerifyOTP = () => {
       toast.success('A new verification code has been sent to your phone.');
     } catch (error) {
       console.error('Resend OTP error:', error);
-      toast.error('Failed to resend OTP: ' + (error.message || 'Unknown error'));
+      if (error.message.includes('Too many requests')) {
+        toast.error('Too many resend attempts. Please try again later.');
+      } else {
+        toast.error('Failed to resend OTP. Please try again.');
+      }
     } finally {
       setIsResending(false);
     }
   };
 
   if (session) navigate('/');
+
+  if (!phone || !fullName) {
+    navigate('/signin');
+    return null;
+  }
 
   return (
     <div className="container mx-auto px-4 py-8 flex justify-center items-center min-h-screen">
