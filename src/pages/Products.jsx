@@ -1,10 +1,10 @@
 import React, { useState, useMemo, useCallback } from 'react';
-import { useQuery } from '@tanstack/react-query';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Search } from 'lucide-react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link } from 'react-router-dom';
+import { useProducts } from '../integrations/supabase/hooks/useProducts';
 
 const ProductCategory = ({ title, items, searchTerm }) => {
   const filteredItems = useMemo(() => {
@@ -48,28 +48,29 @@ const fetchProducts = async () => {
 
 const Products = () => {
   const [searchTerm, setSearchTerm] = useState('');
-  const location = useLocation();
-
-  const { data: categories, isLoading, isError } = useQuery({
-    queryKey: ['products'],
-    queryFn: fetchProducts,
-    staleTime: 60000, // 1 minute
-  });
+  const { data: products, isLoading, isError } = useProducts();
 
   const handleSearchChange = useCallback((e) => {
     setSearchTerm(e.target.value);
   }, []);
 
+  const categorizedProducts = useMemo(() => {
+    if (!products) return [];
+    return products.reduce((acc, product) => {
+      if (!acc[product.category]) {
+        acc[product.category] = [];
+      }
+      acc[product.category].push(product);
+      return acc;
+    }, {});
+  }, [products]);
+
   const filteredCategories = useMemo(() => {
-    if (!categories) return [];
-    if (searchTerm === '') return categories;
-    return categories.filter(category => 
-      category.items.some(item => 
-        item && typeof item === 'object' && item.name &&
-        item.name.toLowerCase().includes(searchTerm.toLowerCase())
-      )
+    if (searchTerm === '') return Object.entries(categorizedProducts);
+    return Object.entries(categorizedProducts).filter(([category, items]) => 
+      items.some(item => item.name.toLowerCase().includes(searchTerm.toLowerCase()))
     );
-  }, [categories, searchTerm]);
+  }, [categorizedProducts, searchTerm]);
 
   if (isLoading) return <div>Loading...</div>;
   if (isError) return <div>Error fetching products</div>;
@@ -93,8 +94,8 @@ const Products = () => {
       </div>
       
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-        {filteredCategories.map((category, index) => (
-          <ProductCategory key={index} title={category.title} items={category.items} searchTerm={searchTerm} />
+        {filteredCategories.map(([category, items]) => (
+          <ProductCategory key={category} title={category} items={items} searchTerm={searchTerm} />
         ))}
       </div>
 
