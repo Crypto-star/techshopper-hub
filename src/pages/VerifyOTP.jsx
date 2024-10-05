@@ -6,9 +6,9 @@ import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp
 import { useSupabaseAuth } from '../integrations/supabase/auth';
 import { supabase } from '../integrations/supabase/supabase';
 import { toast } from 'sonner';
+import OTPVerificationForm from '../components/OTPVerificationForm';
 
 const VerifyOTP = () => {
-  const [otp, setOtp] = useState('');
   const [isVerifying, setIsVerifying] = useState(false);
   const [isResending, setIsResending] = useState(false);
   const { session } = useSupabaseAuth();
@@ -16,8 +16,7 @@ const VerifyOTP = () => {
   const location = useLocation();
   const { phone, fullName } = location.state || {};
 
-  const handleVerify = async (e) => {
-    e.preventDefault();
+  const handleVerify = async (otp) => {
     setIsVerifying(true);
     try {
       const { error, data } = await supabase.auth.verifyOtp({
@@ -27,24 +26,25 @@ const VerifyOTP = () => {
       });
       if (error) throw error;
       
-      // If it's a new user, update their profile with the full name
       if (data.user && !data.user.user_metadata.name) {
-        await supabase.auth.updateUser({
-          data: { name: fullName }
-        });
+        await supabase.auth.updateUser({ data: { name: fullName } });
       }
       
       toast.success('Successfully verified!');
       navigate('/');
     } catch (error) {
       console.error('Verification error:', error);
-      if (error.message.includes('Token has expired or is invalid')) {
-        toast.error('OTP has expired. Please request a new one.');
-      } else {
-        toast.error(error.message || 'Verification failed. Please try again.');
-      }
+      handleVerificationError(error);
     } finally {
       setIsVerifying(false);
+    }
+  };
+
+  const handleVerificationError = (error) => {
+    if (error.message.includes('Token has expired or is invalid')) {
+      toast.error('OTP has expired. Please request a new one.');
+    } else {
+      toast.error(error.message || 'Verification failed. Please try again.');
     }
   };
 
@@ -53,14 +53,10 @@ const VerifyOTP = () => {
     try {
       const { error } = await supabase.auth.signInWithOtp({ 
         phone,
-        options: { 
-          data: { name: fullName }
-        }
+        options: { data: { name: fullName } }
       });
-
       if (error) throw error;
       toast.success('A new verification code has been sent to your phone.');
-      setOtp(''); // Clear the OTP input
     } catch (error) {
       console.error('Resend OTP error:', error);
       toast.error('Failed to resend OTP: ' + (error.message || 'Unknown error'));
@@ -79,32 +75,12 @@ const VerifyOTP = () => {
           <CardDescription className="text-center">Enter the OTP sent to your phone</CardDescription>
         </CardHeader>
         <CardContent>
-          <form onSubmit={handleVerify} className="space-y-4">
-            <InputOTP
-              maxLength={6}
-              value={otp}
-              onChange={setOtp}
-              render={({ slots }) => (
-                <InputOTPGroup>
-                  {slots.map((slot, index) => (
-                    <InputOTPSlot key={index} {...slot} />
-                  ))}
-                </InputOTPGroup>
-              )}
-            />
-            <Button type="submit" className="w-full" disabled={isVerifying || isResending}>
-              {isVerifying ? 'Verifying...' : 'Verify OTP'}
-            </Button>
-            <Button 
-              type="button" 
-              variant="outline" 
-              className="w-full" 
-              onClick={handleResendOTP}
-              disabled={isVerifying || isResending}
-            >
-              {isResending ? 'Resending...' : 'Resend OTP'}
-            </Button>
-          </form>
+          <OTPVerificationForm 
+            handleVerify={handleVerify} 
+            handleResendOTP={handleResendOTP}
+            isVerifying={isVerifying}
+            isResending={isResending}
+          />
         </CardContent>
       </Card>
     </div>

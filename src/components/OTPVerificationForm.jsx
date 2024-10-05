@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp";
 import { toast } from 'sonner';
 
-const OTPVerificationForm = ({ handleVerify, handleResendOTP }) => {
+const OTPVerificationForm = ({ handleVerify, handleResendOTP, isVerifying, isResending }) => {
   const [otp, setOtp] = useState('');
 
   const onSubmit = (e) => {
@@ -32,8 +32,18 @@ const OTPVerificationForm = ({ handleVerify, handleResendOTP }) => {
           )}
         />
       </div>
-      <Button type="submit" className="w-full">Verify OTP</Button>
-      <Button type="button" variant="outline" className="w-full" onClick={handleResendOTP}>Resend OTP</Button>
+      <Button type="submit" className="w-full" disabled={isVerifying || isResending}>
+        {isVerifying ? 'Verifying...' : 'Verify OTP'}
+      </Button>
+      <Button 
+        type="button" 
+        variant="outline" 
+        className="w-full" 
+        onClick={handleResendOTP}
+        disabled={isVerifying || isResending}
+      >
+        {isResending ? 'Resending...' : 'Resend OTP'}
+      </Button>
     </form>
   );
 };
