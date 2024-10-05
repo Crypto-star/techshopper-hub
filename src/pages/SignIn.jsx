@@ -74,6 +74,10 @@ const SignIn = () => {
     sendOTP();
   };
 
+  const handleOTPChange = (value) => {
+    setOtp(value);
+  };
+
   if (loading) return <div>Loading...</div>;
   if (session) navigate('/profile');
 
@@ -112,6 +116,8 @@ const SignIn = () => {
                 <label htmlFor="otp" className="block text-sm font-medium text-gray-700">Enter OTP</label>
                 <InputOTP
                   maxLength={6}
+                  value={otp}
+                  onChange={handleOTPChange}
                   render={({ slots }) => (
                     <InputOTPGroup>
                       {slots.map((slot, index) => (
@@ -119,8 +125,6 @@ const SignIn = () => {
                       ))}
                     </InputOTPGroup>
                   )}
-                  value={otp}
-                  onChange={setOtp}
                 />
               </div>
               <Button type="submit" className="w-full">Verify OTP</Button>
