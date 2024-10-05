@@ -8,6 +8,7 @@ import { Link, useLocation } from 'react-router-dom';
 const ProductCategory = ({ title, items, searchTerm }) => {
   const filteredItems = useMemo(() => {
     return items.filter(item =>
+      item && typeof item === 'object' && item.name &&
       item.name.toLowerCase().includes(searchTerm.toLowerCase())
     );
   }, [items, searchTerm]);
@@ -62,45 +63,45 @@ const Products = () => {
     {
       title: "DIY Kits",
       items: [
-        "Smart Home Automation Kit - Control your home with ease",
-        "Arduino-based Robot Car Kit - Build your own programmable robot",
-        "IoT Weather Station Kit - Monitor local weather conditions",
-        "Solar Power Charging Kit - Harness renewable energy",
-        "Electronic Piano Kit - Create your own musical instrument",
-        "Hydroponic Garden System Kit - Grow plants without soil"
+        { id: "smart-home-kit", name: "Smart Home Automation Kit - Control your home with ease" },
+        { id: "robot-car-kit", name: "Arduino-based Robot Car Kit - Build your own programmable robot" },
+        { id: "weather-station-kit", name: "IoT Weather Station Kit - Monitor local weather conditions" },
+        { id: "solar-charging-kit", name: "Solar Power Charging Kit - Harness renewable energy" },
+        { id: "electronic-piano-kit", name: "Electronic Piano Kit - Create your own musical instrument" },
+        { id: "hydroponic-kit", name: "Hydroponic Garden System Kit - Grow plants without soil" }
       ]
     },
     {
       title: "STEM Kits & Toys",
       items: [
-        "Snap Circuits Pro SC-500 - Learn electronics through fun projects",
-        "Sphero BOLT - Programmable robotic ball for coding adventures",
-        "Makeblock mBot - STEM educational robot kit",
-        "Ozobot Bit Coding Robot - Tiny but mighty coding companion",
-        "LEGO Mindstorms Robot Inventor - Build and program advanced robots",
-        "Micro:bit Go Bundle - Pocket-sized computer for learning coding"
+        { id: "snap-circuits", name: "Snap Circuits Pro SC-500 - Learn electronics through fun projects" },
+        { id: "sphero-bolt", name: "Sphero BOLT - Programmable robotic ball for coding adventures" },
+        { id: "makeblock-mbot", name: "Makeblock mBot - STEM educational robot kit" },
+        { id: "ozobot-bit", name: "Ozobot Bit Coding Robot - Tiny but mighty coding companion" },
+        { id: "lego-mindstorms", name: "LEGO Mindstorms Robot Inventor - Build and program advanced robots" },
+        { id: "microbit-go", name: "Micro:bit Go Bundle - Pocket-sized computer for learning coding" }
       ]
     },
     {
       title: "Prototyping Tools",
       items: [
-        "Solderless Breadboard 830 Point - Perfect for circuit prototyping",
-        "Jumper Wire Kit - 120pcs Multicolored",
-        "Hakko FX888D-23BY Digital Soldering Station",
-        "Fluke 117 Electricians True RMS Multimeter",
-        "ELEGOO 3D Printer Filament PLA 1.75mm",
-        "PCB Prototype Board Kit - Various sizes for different projects"
+        { id: "solderless-breadboard", name: "Solderless Breadboard 830 Point - Perfect for circuit prototyping" },
+        { id: "jumper-wire-kit", name: "Jumper Wire Kit - 120pcs Multicolored" },
+        { id: "hakko-soldering-station", name: "Hakko FX888D-23BY Digital Soldering Station" },
+        { id: "fluke-multimeter", name: "Fluke 117 Electricians True RMS Multimeter" },
+        { id: "elegoo-3d-printer-filament", name: "ELEGOO 3D Printer Filament PLA 1.75mm" },
+        { id: "pcb-prototype-board", name: "PCB Prototype Board Kit - Various sizes for different projects" }
       ]
     },
     {
       title: "Educational Resources",
       items: [
-        "Arduino Programming Fundamentals - Comprehensive e-book",
-        "Introduction to IoT - Online video course",
-        "PCB Design Mastery - Step-by-step tutorial series",
-        "Robotics for Beginners - Interactive learning platform",
-        "Advanced Sensor Applications - Downloadable project guide",
-        "Machine Learning with Raspberry Pi - Hands-on course"
+        { id: "arduino-fundamentals", name: "Arduino Programming Fundamentals - Comprehensive e-book" },
+        { id: "iot-introduction", name: "Introduction to IoT - Online video course" },
+        { id: "pcb-design-mastery", name: "PCB Design Mastery - Step-by-step tutorial series" },
+        { id: "robotics-beginners", name: "Robotics for Beginners - Interactive learning platform" },
+        { id: "advanced-sensor-applications", name: "Advanced Sensor Applications - Downloadable project guide" },
+        { id: "machine-learning-raspberry-pi", name: "Machine Learning with Raspberry Pi - Hands-on course" }
       ]
     }
   ];
@@ -113,7 +114,8 @@ const Products = () => {
     if (searchTerm === '') return categories;
     return categories.filter(category => 
       category.items.some(item => 
-        item.toLowerCase().includes(searchTerm.toLowerCase())
+        item && typeof item === 'object' && item.name &&
+        item.name.toLowerCase().includes(searchTerm.toLowerCase())
       )
     );
   }, [categories, searchTerm]);
