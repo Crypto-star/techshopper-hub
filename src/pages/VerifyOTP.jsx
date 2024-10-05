@@ -9,6 +9,7 @@ import { toast } from 'sonner';
 
 const VerifyOTP = () => {
   const [otp, setOtp] = useState('');
+  const [isResending, setIsResending] = useState(false);
   const { session } = useSupabaseAuth();
   const navigate = useNavigate();
   const location = useLocation();
@@ -35,10 +36,29 @@ const VerifyOTP = () => {
       navigate('/');
     } catch (error) {
       if (error.message.includes('Token has expired or is invalid')) {
-        toast.error('The verification code has expired or is invalid. Please try again.');
+        toast.error('The verification code has expired or is invalid. Please try again or request a new code.');
       } else {
         toast.error(error.message);
       }
+    }
+  };
+
+  const handleResendOTP = async () => {
+    setIsResending(true);
+    try {
+      const { error } = await supabase.auth.signInWithOtp({ 
+        phone,
+        options: { 
+          data: { name: fullName }
+        }
+      });
+
+      if (error) throw error;
+      toast.success('A new verification code has been sent to your phone.');
+    } catch (error) {
+      toast.error('Failed to resend OTP: ' + error.message);
+    } finally {
+      setIsResending(false);
     }
   };
 
@@ -66,6 +86,15 @@ const VerifyOTP = () => {
               )}
             />
             <Button type="submit" className="w-full">Verify OTP</Button>
+            <Button 
+              type="button" 
+              variant="outline" 
+              className="w-full" 
+              onClick={handleResendOTP}
+              disabled={isResending}
+            >
+              {isResending ? 'Resending...' : 'Resend OTP'}
+            </Button>
           </form>
         </CardContent>
       </Card>
