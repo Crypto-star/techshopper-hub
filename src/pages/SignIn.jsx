@@ -7,30 +7,31 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useSupabaseAuth } from '../integrations/supabase/auth';
 import { supabase } from '../integrations/supabase/supabase';
 import { toast } from 'sonner';
+import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp";
 
 const SignIn = () => {
   const [phone, setPhone] = useState('');
-  const [password, setPassword] = useState('');
   const [name, setName] = useState('');
+  const [otp, setOtp] = useState('');
   const [isVerifying, setIsVerifying] = useState(false);
   const { session, loading } = useSupabaseAuth();
   const navigate = useNavigate();
 
   const handleSignIn = async (e) => {
     e.preventDefault();
-    const { error } = await supabase.auth.signInWithPassword({ phone, password });
+    const { error } = await supabase.auth.signInWithOtp({ phone });
     if (error) {
       toast.error(error.message);
     } else {
-      navigate('/profile');
+      setIsVerifying(true);
+      toast.success('A verification code has been sent to your phone.');
     }
   };
 
   const handleSignUp = async (e) => {
     e.preventDefault();
     const { error } = await supabase.auth.signUp({ 
-      phone, 
-      password,
+      phone,
       options: {
         data: {
           name
@@ -41,7 +42,18 @@ const SignIn = () => {
       toast.error(error.message);
     } else {
       setIsVerifying(true);
-      toast.success('A verification code has been sent to your phone. Please verify your account.');
+      toast.success('A verification code has been sent to your phone.');
+    }
+  };
+
+  const handleVerify = async (e) => {
+    e.preventDefault();
+    const { error, data } = await supabase.auth.verifyOtp({ phone, token: otp, type: 'sms' });
+    if (error) {
+      toast.error(error.message);
+    } else {
+      toast.success('Successfully verified!');
+      navigate('/profile');
     }
   };
 
@@ -56,32 +68,46 @@ const SignIn = () => {
           <CardDescription className="text-center">Sign in to your account or create a new one</CardDescription>
         </CardHeader>
         <CardContent>
-          <Tabs defaultValue="signin" className="w-full">
-            <TabsList className="grid w-full grid-cols-2">
-              <TabsTrigger value="signin">Sign In</TabsTrigger>
-              <TabsTrigger value="signup">Sign Up</TabsTrigger>
-            </TabsList>
-            <TabsContent value="signin">
-              <form onSubmit={handleSignIn} className="space-y-4">
-                <Input type="tel" placeholder="Phone Number" value={phone} onChange={(e) => setPhone(e.target.value)} required />
-                <Input type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} required />
-                <Button type="submit" className="w-full">Sign In</Button>
-              </form>
-            </TabsContent>
-            <TabsContent value="signup">
-              <form onSubmit={handleSignUp} className="space-y-4">
-                <Input type="text" placeholder="Full Name" value={name} onChange={(e) => setName(e.target.value)} required />
-                <Input type="tel" placeholder="Phone Number" value={phone} onChange={(e) => setPhone(e.target.value)} required />
-                <Input type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} required />
-                <Button type="submit" className="w-full">Sign Up</Button>
-              </form>
-              {isVerifying && (
-                <p className="mt-4 text-sm text-gray-600">
-                  A verification code has been sent to your phone. Please verify your account.
-                </p>
-              )}
-            </TabsContent>
-          </Tabs>
+          {!isVerifying ? (
+            <Tabs defaultValue="signin" className="w-full">
+              <TabsList className="grid w-full grid-cols-2">
+                <TabsTrigger value="signin">Sign In</TabsTrigger>
+                <TabsTrigger value="signup">Sign Up</TabsTrigger>
+              </TabsList>
+              <TabsContent value="signin">
+                <form onSubmit={handleSignIn} className="space-y-4">
+                  <Input type="tel" placeholder="Phone Number" value={phone} onChange={(e) => setPhone(e.target.value)} required />
+                  <Button type="submit" className="w-full">Send OTP</Button>
+                </form>
+              </TabsContent>
+              <TabsContent value="signup">
+                <form onSubmit={handleSignUp} className="space-y-4">
+                  <Input type="text" placeholder="Full Name" value={name} onChange={(e) => setName(e.target.value)} required />
+                  <Input type="tel" placeholder="Phone Number" value={phone} onChange={(e) => setPhone(e.target.value)} required />
+                  <Button type="submit" className="w-full">Send OTP</Button>
+                </form>
+              </TabsContent>
+            </Tabs>
+          ) : (
+            <form onSubmit={handleVerify} className="space-y-4">
+              <div className="space-y-2">
+                <label htmlFor="otp" className="block text-sm font-medium text-gray-700">Enter OTP</label>
+                <InputOTP
+                  maxLength={6}
+                  render={({ slots }) => (
+                    <InputOTPGroup>
+                      {slots.map((slot, index) => (
+                        <InputOTPSlot key={index} {...slot} />
+                      ))}
+                    </InputOTPGroup>
+                  )}
+                  value={otp}
+                  onChange={setOtp}
+                />
+              </div>
+              <Button type="submit" className="w-full">Verify OTP</Button>
+            </form>
+          )}
         </CardContent>
       </Card>
     </div>

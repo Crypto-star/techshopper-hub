@@ -57,7 +57,7 @@ const Profile = () => {
             </div>
             <div>
               <label htmlFor="phone" className="block text-sm font-medium text-gray-700">Phone</label>
-              <Input id="phone" type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} />
+              <Input id="phone" type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} readOnly />
             </div>
             <div>
               <label htmlFor="occupation" className="block text-sm font-medium text-gray-700">Occupation</label>
