@@ -41,7 +41,11 @@ const SignIn = () => {
       }
     });
     if (error) {
-      toast.error(error.message);
+      if (error.message.includes('email_address_not_authorized')) {
+        toast.error('This email address is not authorized for sign-up. Please contact support or use an authorized email.');
+      } else {
+        toast.error(error.message);
+      }
     } else {
       setIsVerifying(true);
       toast.success('Please check your email for the verification link.');
