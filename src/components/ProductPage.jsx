@@ -2,9 +2,12 @@ import React from 'react';
 import { useParams } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { useCart } from '../contexts/CartContext';
+import { toast } from 'sonner';
 
 const ProductPage = () => {
   const { productId } = useParams();
+  const { addToCart } = useCart();
 
   // This is a mock product data. In a real application, you would fetch this data based on the productId.
   const product = {
@@ -21,6 +24,11 @@ const ProductPage = () => {
       "16Mhz Clock Speed"
     ],
     image: "/placeholder.svg"
+  };
+
+  const handleAddToCart = () => {
+    addToCart(product);
+    toast.success('Product added to cart');
   };
 
   return (
@@ -42,7 +50,7 @@ const ProductPage = () => {
                 <li key={index} className="text-gray-700">{feature}</li>
               ))}
             </ul>
-            <Button className="w-full md:w-auto">Add to Cart</Button>
+            <Button className="w-full md:w-auto" onClick={handleAddToCart}>Add to Cart</Button>
           </div>
         </CardContent>
       </Card>

@@ -3,11 +3,13 @@ import { Link, useNavigate } from 'react-router-dom';
 import { ShoppingCart, Wrench, Briefcase, BookOpen, Users, Mail, LogIn, Menu, X, Search } from 'lucide-react';
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { useCart } from '../contexts/CartContext';
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const navigate = useNavigate();
+  const { cart } = useCart();
 
   const navItems = [
     { name: 'Products', path: '/products', icon: <ShoppingCart className="w-4 h-4" /> },
@@ -29,6 +31,8 @@ const Navbar = () => {
       navigate(`/search?q=${encodeURIComponent(searchTerm.trim())}`);
     }
   }, [searchTerm, navigate]);
+
+  const cartItemCount = cart.reduce((sum, item) => sum + item.quantity, 0);
 
   return (
     <nav className="bg-white dark:bg-gray-800 shadow-md">
@@ -52,7 +56,7 @@ const Navbar = () => {
             </form>
           </div>
 
-          <div className="hidden md:flex space-x-4">
+          <div className="hidden md:flex space-x-4 items-center">
             {navItems.map((item) => (
               <Link
                 key={item.name}
@@ -63,6 +67,14 @@ const Navbar = () => {
                 <span>{item.name}</span>
               </Link>
             ))}
+            <Link to="/cart" className="relative">
+              <ShoppingCart className="w-6 h-6 text-gray-700 dark:text-gray-300" />
+              {cartItemCount > 0 && (
+                <span className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs">
+                  {cartItemCount}
+                </span>
+              )}
+            </Link>
           </div>
           <button
             className="md:hidden focus:outline-none"
@@ -100,6 +112,14 @@ const Navbar = () => {
                 <span>{item.name}</span>
               </Link>
             ))}
+            <Link
+              to="/cart"
+              className="flex items-center space-x-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-blue-600 dark:hover:text-blue-400 block px-3 py-2 rounded-md text-base font-medium transition-colors"
+              onClick={toggleMenu}
+            >
+              <ShoppingCart className="w-4 h-4" />
+              <span>Cart ({cartItemCount})</span>
+            </Link>
           </div>
         </div>
       )}
