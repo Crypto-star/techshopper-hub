@@ -1,26 +1,32 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp";
+import { toast } from 'sonner';
 
-const OTPVerificationForm = ({ otp, handleOTPChange, handleVerify, handleResendOTP }) => {
+const OTPVerificationForm = ({ handleVerify, handleResendOTP }) => {
+  const [otp, setOtp] = useState('');
+
+  const onSubmit = (e) => {
+    e.preventDefault();
+    if (otp.length !== 6) {
+      toast.error('Please enter a valid 6-digit OTP');
+      return;
+    }
+    handleVerify(otp);
+  };
+
   return (
-    <form onSubmit={handleVerify} className="space-y-4">
+    <form onSubmit={onSubmit} className="space-y-4">
       <div className="space-y-2">
         <label htmlFor="otp" className="block text-sm font-medium text-gray-700">Enter OTP</label>
         <InputOTP
           maxLength={6}
           value={otp}
-          onChange={handleOTPChange}
+          onChange={setOtp}
           render={({ slots }) => (
             <InputOTPGroup>
               {slots.map((slot, index) => (
-                <InputOTPSlot key={index} {...slot}>
-                  {({ char }) => (
-                    <span className="text-center w-full text-lg">
-                      {char || ''}
-                    </span>
-                  )}
-                </InputOTPSlot>
+                <InputOTPSlot key={index} {...slot} />
               ))}
             </InputOTPGroup>
           )}
