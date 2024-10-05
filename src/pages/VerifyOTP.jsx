@@ -17,12 +17,20 @@ const VerifyOTP = () => {
   const handleVerify = async (e) => {
     e.preventDefault();
     try {
-      const { error } = await supabase.auth.verifyOtp({
+      const { error, data } = await supabase.auth.verifyOtp({
         phone,
         token: otp,
         type: 'sms'
       });
       if (error) throw error;
+      
+      // If it's a new user, update their profile with the full name
+      if (data.user && !data.user.user_metadata.name) {
+        await supabase.auth.updateUser({
+          data: { name: fullName }
+        });
+      }
+      
       toast.success('Successfully verified!');
       navigate('/');
     } catch (error) {
