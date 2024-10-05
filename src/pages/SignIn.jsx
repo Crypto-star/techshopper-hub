@@ -51,8 +51,12 @@ const SignIn = () => {
 
   const handleVerify = async (e) => {
     e.preventDefault();
+    if (otp.length !== 6) {
+      toast.error('Please enter a valid 6-digit OTP');
+      return;
+    }
     try {
-      const { error, data } = await supabase.auth.verifyOtp({
+      const { error } = await supabase.auth.verifyOtp({
         phone,
         token: otp,
         type: 'sms'
@@ -61,11 +65,7 @@ const SignIn = () => {
       toast.success('Successfully verified!');
       navigate('/profile');
     } catch (error) {
-      if (error.message.includes('Token has expired or is invalid')) {
-        toast.error('The verification code has expired or is invalid. Please request a new one.');
-      } else {
-        toast.error(error.message);
-      }
+      toast.error(error.message);
     }
   };
 
