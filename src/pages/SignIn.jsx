@@ -12,6 +12,7 @@ import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp
 const SignIn = () => {
   const [phone, setPhone] = useState('');
   const [name, setName] = useState('');
+  const [password, setPassword] = useState('');
   const [otp, setOtp] = useState('');
   const [isVerifying, setIsVerifying] = useState(false);
   const { session, loading } = useSupabaseAuth();
@@ -21,6 +22,7 @@ const SignIn = () => {
     const { error } = isSignUp
       ? await supabase.auth.signUp({ 
           phone,
+          password,
           options: { data: { name } }
         })
       : await supabase.auth.signInWithOtp({ phone });
@@ -40,6 +42,10 @@ const SignIn = () => {
 
   const handleSignUp = (e) => {
     e.preventDefault();
+    if (password.length < 6) {
+      toast.error('Password must be at least 6 characters long');
+      return;
+    }
     sendOTP(true);
   };
 
@@ -95,7 +101,8 @@ const SignIn = () => {
                 <form onSubmit={handleSignUp} className="space-y-4">
                   <Input type="text" placeholder="Full Name" value={name} onChange={(e) => setName(e.target.value)} required />
                   <Input type="tel" placeholder="Phone Number" value={phone} onChange={(e) => setPhone(e.target.value)} required />
-                  <Button type="submit" className="w-full">Send OTP</Button>
+                  <Input type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} required minLength={6} />
+                  <Button type="submit" className="w-full">Sign Up</Button>
                 </form>
               </TabsContent>
             </Tabs>
