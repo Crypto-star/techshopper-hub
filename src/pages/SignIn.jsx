@@ -131,7 +131,7 @@ const SignIn = () => {
                         <InputOTPSlot key={index} {...slot}>
                           {({ char }) => (
                             <span className="text-center w-full text-lg">
-                              {char}
+                              {char || ''}
                             </span>
                           )}
                         </InputOTPSlot>
