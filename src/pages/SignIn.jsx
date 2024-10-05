@@ -13,7 +13,6 @@ const SignIn = () => {
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
-  const [otp, setOtp] = useState('');
   const [isVerifying, setIsVerifying] = useState(false);
   const { session, loading } = useSupabaseAuth();
   const navigate = useNavigate();
@@ -48,18 +47,7 @@ const SignIn = () => {
       }
     } else {
       setIsVerifying(true);
-      toast.success('Please check your email for the verification link.');
-    }
-  };
-
-  const handleVerifyOTP = async (e) => {
-    e.preventDefault();
-    const { error } = await supabase.auth.verifyOtp({ phone, token: otp });
-    if (error) {
-      toast.error(error.message);
-    } else {
-      toast.success('Phone number verified successfully!');
-      navigate('/profile');
+      toast.success('If your email is authorized, you will receive a verification link. Please check your email.');
     }
   };
 
@@ -87,19 +75,17 @@ const SignIn = () => {
               </form>
             </TabsContent>
             <TabsContent value="signup">
-              {!isVerifying ? (
-                <form onSubmit={handleSignUp} className="space-y-4">
-                  <Input type="text" placeholder="Full Name" value={name} onChange={(e) => setName(e.target.value)} required />
-                  <Input type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} required />
-                  <Input type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} required />
-                  <Input type="tel" placeholder="Phone Number" value={phone} onChange={(e) => setPhone(e.target.value)} required />
-                  <Button type="submit" className="w-full">Sign Up</Button>
-                </form>
-              ) : (
-                <form onSubmit={handleVerifyOTP} className="space-y-4">
-                  <Input type="text" placeholder="Enter OTP" value={otp} onChange={(e) => setOtp(e.target.value)} required />
-                  <Button type="submit" className="w-full">Verify OTP</Button>
-                </form>
+              <form onSubmit={handleSignUp} className="space-y-4">
+                <Input type="text" placeholder="Full Name" value={name} onChange={(e) => setName(e.target.value)} required />
+                <Input type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} required />
+                <Input type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} required />
+                <Input type="tel" placeholder="Phone Number" value={phone} onChange={(e) => setPhone(e.target.value)} required />
+                <Button type="submit" className="w-full">Sign Up</Button>
+              </form>
+              {isVerifying && (
+                <p className="mt-4 text-sm text-gray-600">
+                  If your email is authorized, you will receive a verification link. Please check your email.
+                </p>
               )}
             </TabsContent>
           </Tabs>
