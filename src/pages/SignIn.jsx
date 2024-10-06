@@ -6,6 +6,8 @@ import { Input } from "@/components/ui/input";
 import { useSupabaseAuth } from '../integrations/supabase/auth';
 import { supabase } from '../integrations/supabase/supabase';
 import { toast } from 'sonner';
+import { FcGoogle } from 'react-icons/fc';
+import { FaGithub } from 'react-icons/fa';
 
 const SignIn = () => {
   const [fullName, setFullName] = useState('');
@@ -28,6 +30,17 @@ const SignIn = () => {
       toast.success('A verification code has been sent to your phone.');
     } catch (error) {
       toast.error(error.message);
+    }
+  };
+
+  const signInWithOAuth = async (provider) => {
+    try {
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: provider,
+      });
+      if (error) throw error;
+    } catch (error) {
+      toast.error(`Error signing in with ${provider}: ${error.message}`);
     }
   };
 
@@ -59,6 +72,25 @@ const SignIn = () => {
             />
             <Button type="submit" className="w-full">Send OTP</Button>
           </form>
+          <div className="mt-4">
+            <p className="text-center text-sm text-gray-600 mb-2">Or sign in with</p>
+            <div className="flex justify-center space-x-2">
+              <Button
+                onClick={() => signInWithOAuth('google')}
+                variant="outline"
+                className="flex items-center justify-center"
+              >
+                <FcGoogle className="mr-2" /> Google
+              </Button>
+              <Button
+                onClick={() => signInWithOAuth('github')}
+                variant="outline"
+                className="flex items-center justify-center"
+              >
+                <FaGithub className="mr-2" /> GitHub
+              </Button>
+            </div>
+          </div>
         </CardContent>
       </Card>
     </div>

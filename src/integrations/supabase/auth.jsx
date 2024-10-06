@@ -27,9 +27,14 @@ export const SupabaseAuthProviderInner = ({ children }) => {
       setLoading(false);
     };
 
-    const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
+    const { data: authListener } = supabase.auth.onAuthStateChange(async (event, session) => {
       setSession(session);
       queryClient.invalidateQueries('user');
+      
+      if (event === 'SIGNED_IN') {
+        // Handle successful sign-in
+        // You can add additional logic here if needed
+      }
     });
 
     getSession();
@@ -63,6 +68,6 @@ export const SupabaseAuthUI = () => (
     supabaseClient={supabase}
     appearance={{ theme: ThemeSupa }}
     theme="default"
-    providers={[]}
+    providers={['google', 'github']}
   />
 );
