@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { useSupabaseAuth } from '../integrations/supabase/auth';
@@ -9,10 +9,17 @@ import OTPVerificationForm from '../components/OTPVerificationForm';
 const VerifyOTP = () => {
   const [isVerifying, setIsVerifying] = useState(false);
   const [isResending, setIsResending] = useState(false);
+  const [otpExpired, setOtpExpired] = useState(false);
   const { session } = useSupabaseAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const { phone, fullName } = location.state || {};
+
+  useEffect(() => {
+    if (!phone || !fullName) {
+      navigate('/signin');
+    }
+  }, [phone, fullName, navigate]);
 
   const handleVerify = async (otp) => {
     setIsVerifying(true);
@@ -40,9 +47,11 @@ const VerifyOTP = () => {
 
   const handleVerificationError = (error) => {
     if (error.message.includes('Token has expired or is invalid')) {
+      setOtpExpired(true);
       toast.error('OTP has expired or is invalid. Please request a new one.');
     } else if (error.message.includes('Invalid phone number')) {
       toast.error('Invalid phone number. Please check and try again.');
+      navigate('/signin');
     } else if (error.message.includes('Too many requests')) {
       toast.error('Too many attempts. Please try again later.');
     } else {
@@ -52,6 +61,7 @@ const VerifyOTP = () => {
 
   const handleResendOTP = async () => {
     setIsResending(true);
+    setOtpExpired(false);
     try {
       const { error } = await supabase.auth.signInWithOtp({ 
         phone,
@@ -71,11 +81,13 @@ const VerifyOTP = () => {
     }
   };
 
-  if (session) navigate('/');
+  if (session) {
+    navigate('/');
+    return null;
+  }
 
   if (!phone || !fullName) {
-    navigate('/signin');
-    return null;
+    return null; // The useEffect will handle navigation
   }
 
   return (
@@ -83,7 +95,11 @@ const VerifyOTP = () => {
       <Card className="w-full max-w-md">
         <CardHeader>
           <CardTitle className="text-2xl text-center">Verify OTP</CardTitle>
-          <CardDescription className="text-center">Enter the OTP sent to your phone</CardDescription>
+          <CardDescription className="text-center">
+            {otpExpired 
+              ? "Your OTP has expired. Please request a new one."
+              : "Enter the OTP sent to your phone"}
+          </CardDescription>
         </CardHeader>
         <CardContent>
           <OTPVerificationForm 
@@ -91,6 +107,7 @@ const VerifyOTP = () => {
             handleResendOTP={handleResendOTP}
             isVerifying={isVerifying}
             isResending={isResending}
+            otpExpired={otpExpired}
           />
         </CardContent>
       </Card>

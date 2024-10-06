@@ -1,10 +1,16 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { toast } from 'sonner';
 
-const OTPVerificationForm = ({ handleVerify, handleResendOTP, isVerifying, isResending }) => {
+const OTPVerificationForm = ({ handleVerify, handleResendOTP, isVerifying, isResending, otpExpired }) => {
   const [otp, setOtp] = useState('');
+
+  useEffect(() => {
+    if (otpExpired) {
+      setOtp('');
+    }
+  }, [otpExpired]);
 
   const onSubmit = (e) => {
     e.preventDefault();
@@ -30,9 +36,14 @@ const OTPVerificationForm = ({ handleVerify, handleResendOTP, isVerifying, isRes
           placeholder="Enter 6-digit OTP"
           className="w-full"
           required
+          disabled={otpExpired}
         />
       </div>
-      <Button type="submit" className="w-full" disabled={isVerifying || isResending}>
+      <Button 
+        type="submit" 
+        className="w-full" 
+        disabled={isVerifying || isResending || otpExpired}
+      >
         {isVerifying ? 'Verifying...' : 'Verify OTP'}
       </Button>
       <Button 
@@ -42,7 +53,7 @@ const OTPVerificationForm = ({ handleVerify, handleResendOTP, isVerifying, isRes
         onClick={handleResendOTP}
         disabled={isVerifying || isResending}
       >
-        {isResending ? 'Resending...' : 'Resend OTP'}
+        {isResending ? 'Resending...' : otpExpired ? 'Request New OTP' : 'Resend OTP'}
       </Button>
     </form>
   );
