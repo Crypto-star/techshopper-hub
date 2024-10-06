@@ -22,7 +22,7 @@ const ProductList = ({ items, searchTerm }) => {
         <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {filteredItems.map((item) => (
             <li key={item.id} className="flex items-center space-x-2">
-              <img src={item.image_url || '/placeholder.svg'} alt={item.name} className="w-10 h-10 object-cover rounded" />
+              <img src="/placeholder.svg" alt={item.name} className="w-10 h-10 object-cover rounded" />
               <Link to={`/products/${item.id}`} className="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400">
                 {item.name} - ${item.price.toFixed(2)}
               </Link>
