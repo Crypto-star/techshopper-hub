@@ -17,6 +17,7 @@ const fromSupabase = async (query) => {
 | description | text   | string | false    |
 | price       | float8 | number | true     |
 | categories  | text   | string | false    |
+| sku         | int4   | number | true     |
 
 Note: 'id' is the Primary Key.
 */
@@ -55,6 +56,16 @@ export const useDeleteProduct = () => {
     const queryClient = useQueryClient();
     return useMutation({
         mutationFn: (id) => fromSupabase(supabase.from('products').delete().eq('id', id)),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['products'] });
+        },
+    });
+};
+
+export const useUpdateProductSKU = () => {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: ({ id, sku }) => fromSupabase(supabase.from('products').update({ sku }).eq('id', id)),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['products'] });
         },

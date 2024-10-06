@@ -14,6 +14,7 @@ const productSchema = z.object({
   description: z.string().min(1, 'Description is required'),
   price: z.number().positive('Price must be positive'),
   categories: z.string().optional(),
+  sku: z.number().int().nonnegative('SKU must be a non-negative integer'),
 });
 
 const AdminProductForm = () => {
@@ -24,6 +25,7 @@ const AdminProductForm = () => {
       description: '',
       price: 0,
       categories: '',
+      sku: 0,
     },
   });
 
@@ -91,6 +93,20 @@ const AdminProductForm = () => {
                 <Input placeholder="Enter categories (comma-separated)" {...field} />
               </FormControl>
               <FormDescription>Optional: Provide categories separated by commas</FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="sku"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>SKU (Stock Keeping Unit)</FormLabel>
+              <FormControl>
+                <Input type="number" {...field} onChange={e => field.onChange(parseInt(e.target.value))} />
+              </FormControl>
+              <FormDescription>Enter the initial stock quantity</FormDescription>
               <FormMessage />
             </FormItem>
           )}
