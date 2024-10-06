@@ -6,7 +6,7 @@ import { Search } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useProducts } from '../integrations/supabase/hooks/useProducts';
 
-const ProductCategory = ({ title, items, searchTerm }) => {
+const ProductList = ({ items, searchTerm }) => {
   const filteredItems = useMemo(() => {
     return items.filter(item =>
       item && typeof item === 'object' && item.name &&
@@ -18,13 +18,10 @@ const ProductCategory = ({ title, items, searchTerm }) => {
 
   return (
     <Card className="mb-8 card-hover">
-      <CardHeader className="bg-gray-50 dark:bg-gray-800">
-        <CardTitle className="text-2xl font-semibold text-blue-600 dark:text-blue-400">{title}</CardTitle>
-      </CardHeader>
       <CardContent>
         <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {filteredItems.map((item, index) => (
-            <li key={index} className="flex items-center space-x-2">
+          {filteredItems.map((item) => (
+            <li key={item.id} className="flex items-center space-x-2">
               <span className="text-blue-500">•</span>
               <Link to={`/products/${item.id}`} className="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400">
                 {item.name}
@@ -37,15 +34,6 @@ const ProductCategory = ({ title, items, searchTerm }) => {
   );
 };
 
-const fetchProducts = async () => {
-  // Replace this with your actual API endpoint
-  const response = await fetch('https://api.example.com/products');
-  if (!response.ok) {
-    throw new Error('Network response was not ok');
-  }
-  return response.json();
-};
-
 const Products = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const { data: products, isLoading, isError } = useProducts();
@@ -54,23 +42,12 @@ const Products = () => {
     setSearchTerm(e.target.value);
   }, []);
 
-  const categorizedProducts = useMemo(() => {
+  const filteredProducts = useMemo(() => {
     if (!products) return [];
-    return products.reduce((acc, product) => {
-      if (!acc[product.category]) {
-        acc[product.category] = [];
-      }
-      acc[product.category].push(product);
-      return acc;
-    }, {});
-  }, [products]);
-
-  const filteredCategories = useMemo(() => {
-    if (searchTerm === '') return Object.entries(categorizedProducts);
-    return Object.entries(categorizedProducts).filter(([category, items]) => 
-      items.some(item => item.name.toLowerCase().includes(searchTerm.toLowerCase()))
+    return products.filter(product => 
+      product.name.toLowerCase().includes(searchTerm.toLowerCase())
     );
-  }, [categorizedProducts, searchTerm]);
+  }, [products, searchTerm]);
 
   if (isLoading) return <div>Loading...</div>;
   if (isError) return <div>Error fetching products</div>;
@@ -93,13 +70,9 @@ const Products = () => {
         </div>
       </div>
       
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-        {filteredCategories.map(([category, items]) => (
-          <ProductCategory key={category} title={category} items={items} searchTerm={searchTerm} />
-        ))}
-      </div>
+      <ProductList items={filteredProducts} searchTerm={searchTerm} />
 
-      {filteredCategories.length === 0 && (
+      {filteredProducts.length === 0 && (
         <p className="text-center text-gray-600 dark:text-gray-300 mt-8">No products found matching your search.</p>
       )}
 

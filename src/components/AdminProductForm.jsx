@@ -13,7 +13,6 @@ const productSchema = z.object({
   name: z.string().min(1, 'Name is required'),
   description: z.string().min(1, 'Description is required'),
   price: z.number().positive('Price must be positive'),
-  category: z.string().min(1, 'Category is required'),
   image_url: z.string().url('Must be a valid URL').optional(),
 });
 
@@ -24,7 +23,6 @@ const AdminProductForm = () => {
       name: '',
       description: '',
       price: 0,
-      category: '',
       image_url: '',
     },
   });
@@ -78,19 +76,6 @@ const AdminProductForm = () => {
               <FormLabel>Price</FormLabel>
               <FormControl>
                 <Input type="number" step="0.01" {...field} onChange={e => field.onChange(parseFloat(e.target.value))} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="category"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Category</FormLabel>
-              <FormControl>
-                <Input placeholder="Enter product category" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
