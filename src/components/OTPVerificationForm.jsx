@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
-import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp";
+import { Input } from "@/components/ui/input";
 import { toast } from 'sonner';
 
 const OTPVerificationForm = ({ handleVerify, handleResendOTP, isVerifying, isResending }) => {
@@ -19,17 +19,17 @@ const OTPVerificationForm = ({ handleVerify, handleResendOTP, isVerifying, isRes
     <form onSubmit={onSubmit} className="space-y-4">
       <div className="space-y-2">
         <label htmlFor="otp" className="block text-sm font-medium text-gray-700">Enter OTP</label>
-        <InputOTP
+        <Input
+          id="otp"
+          type="text"
+          inputMode="numeric"
+          pattern="[0-9]*"
           maxLength={6}
           value={otp}
-          onChange={setOtp}
-          render={({ slots }) => (
-            <InputOTPGroup>
-              {slots.map((slot, index) => (
-                <InputOTPSlot key={index} {...slot} />
-              ))}
-            </InputOTPGroup>
-          )}
+          onChange={(e) => setOtp(e.target.value)}
+          placeholder="Enter 6-digit OTP"
+          className="w-full"
+          required
         />
       </div>
       <Button type="submit" className="w-full" disabled={isVerifying || isResending}>
