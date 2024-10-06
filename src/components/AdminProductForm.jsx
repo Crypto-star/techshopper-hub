@@ -13,7 +13,7 @@ const productSchema = z.object({
   name: z.string().min(1, 'Name is required'),
   description: z.string().min(1, 'Description is required'),
   price: z.number().positive('Price must be positive'),
-  image_url: z.string().url('Must be a valid URL').optional(),
+  categories: z.string().optional(),
 });
 
 const AdminProductForm = () => {
@@ -23,7 +23,7 @@ const AdminProductForm = () => {
       name: '',
       description: '',
       price: 0,
-      image_url: '',
+      categories: '',
     },
   });
 
@@ -83,14 +83,14 @@ const AdminProductForm = () => {
         />
         <FormField
           control={form.control}
-          name="image_url"
+          name="categories"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Image URL</FormLabel>
+              <FormLabel>Categories</FormLabel>
               <FormControl>
-                <Input placeholder="Enter image URL" {...field} />
+                <Input placeholder="Enter categories (comma-separated)" {...field} />
               </FormControl>
-              <FormDescription>Optional: Provide a URL for the product image</FormDescription>
+              <FormDescription>Optional: Provide categories separated by commas</FormDescription>
               <FormMessage />
             </FormItem>
           )}

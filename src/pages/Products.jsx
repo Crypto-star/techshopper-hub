@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useCallback } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Search } from 'lucide-react';
@@ -24,7 +24,7 @@ const ProductList = ({ items, searchTerm }) => {
             <li key={item.id} className="flex items-center space-x-2">
               <span className="text-blue-500">•</span>
               <Link to={`/products/${item.id}`} className="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400">
-                {item.name}
+                {item.name} - ${item.price.toFixed(2)}
               </Link>
             </li>
           ))}
@@ -45,7 +45,8 @@ const Products = () => {
   const filteredProducts = useMemo(() => {
     if (!products) return [];
     return products.filter(product => 
-      product.name.toLowerCase().includes(searchTerm.toLowerCase())
+      product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (product.categories && product.categories.toLowerCase().includes(searchTerm.toLowerCase()))
     );
   }, [products, searchTerm]);
 
@@ -61,7 +62,7 @@ const Products = () => {
         <div className="relative">
           <Input
             type="text"
-            placeholder="Search products..."
+            placeholder="Search products or categories..."
             className="pl-10 pr-4 py-2 rounded-full w-full"
             value={searchTerm}
             onChange={handleSearchChange}
