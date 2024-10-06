@@ -1,6 +1,6 @@
 import React, { useState, useCallback } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { ShoppingCart, Wrench, Briefcase, BookOpen, Users, Mail, LogIn, Menu, X, Search, User, LogOut } from 'lucide-react';
+import { ShoppingCart, Wrench, Briefcase, BookOpen, Users, Mail, LogIn, Menu, X, Search, User, LogOut, Settings } from 'lucide-react';
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useCart } from '../contexts/CartContext';
@@ -52,7 +52,7 @@ const Navbar = () => {
         <div className="flex items-center justify-between h-16">
           <Link to="/" className="text-2xl font-bold text-blue-600 dark:text-blue-400">TechnoMart</Link>
           
-          <div className="hidden md:flex items-center space-x-4">
+          <div className="hidden md:flex space-x-4 items-center">
             <form onSubmit={handleSearch} className="relative">
               <Input
                 type="text"
@@ -90,6 +90,10 @@ const Navbar = () => {
                 <DropdownMenuContent>
                   <DropdownMenuItem onSelect={() => navigate('/profile')}>
                     Profile
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onSelect={() => navigate('/admin/products')}>
+                    <Settings className="w-4 h-4 mr-2" />
+                    Admin Products
                   </DropdownMenuItem>
                   <DropdownMenuItem onSelect={handleLogout}>
                     <LogOut className="w-4 h-4 mr-2" />
@@ -160,6 +164,14 @@ const Navbar = () => {
                 >
                   <User className="w-4 h-4" />
                   <span>{session.user.user_metadata.name}</span>
+                </Link>
+                <Link
+                  to="/admin/products"
+                  className="flex items-center space-x-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-blue-600 dark:hover:text-blue-400 block px-3 py-2 rounded-md text-base font-medium transition-colors"
+                  onClick={toggleMenu}
+                >
+                  <Settings className="w-4 h-4" />
+                  <span>Admin Products</span>
                 </Link>
                 <button
                   onClick={handleLogout}
