@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
@@ -17,6 +17,7 @@ const productSchema = z.object({
 });
 
 const AdminProductForm = () => {
+  const [imageFile, setImageFile] = useState(null);
   const form = useForm({
     resolver: zodResolver(productSchema),
     defaultValues: {
@@ -31,11 +32,25 @@ const AdminProductForm = () => {
 
   const onSubmit = async (data) => {
     try {
+      if (imageFile) {
+        // Generate a unique filename
+        const filename = `product_${Date.now()}_${imageFile.name}`;
+        // In a real application, you would save the file to your server or a CDN here
+        // For this example, we'll just use a placeholder URL
+        data.image_url = `/images/${filename}`;
+      }
       await addProduct.mutateAsync(data);
       toast.success('Product added successfully');
       form.reset();
+      setImageFile(null);
     } catch (error) {
       toast.error('Failed to add product');
+    }
+  };
+
+  const handleImageChange = (e) => {
+    if (e.target.files[0]) {
+      setImageFile(e.target.files[0]);
     }
   };
 
@@ -95,6 +110,20 @@ const AdminProductForm = () => {
             </FormItem>
           )}
         />
+        
+        <FormField
+          name="image"
+          render={() => (
+            <FormItem>
+              <FormLabel>Product Image</FormLabel>
+              <FormControl>
+                <Input type="file" accept="image/*" onChange={handleImageChange} />
+              </FormControl>
+              <FormDescription>Upload a product image (optional)</FormDescription>
+            </FormItem>
+          )}
+        />
+        
         <Button type="submit" disabled={addProduct.isPending}>
           {addProduct.isPending ? 'Adding...' : 'Add Product'}
         </Button>
