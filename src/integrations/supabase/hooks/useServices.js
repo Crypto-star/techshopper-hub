@@ -16,7 +16,7 @@ const fromSupabase = async (query) => {
 | name        | text   | string | true     |
 | description | text   | string | false    |
 | price       | float8 | number | true     |
-| icon        | text   | string | false    |
+| category    | text   | string | false    |
 
 Note: 'id' is the Primary Key.
 */

@@ -6,7 +6,7 @@ import { useAddService } from '../integrations/supabase/hooks/useServices';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from 'sonner';
 
@@ -15,7 +15,6 @@ const serviceSchema = z.object({
   description: z.string().min(1, 'Description is required'),
   price: z.number().positive('Price must be positive'),
   category: z.string().min(1, 'Category is required'),
-  icon: z.string().optional(),
 });
 
 const categories = [
@@ -33,7 +32,6 @@ const AdminServiceForm = () => {
       description: '',
       price: 0,
       category: '',
-      icon: '',
     },
   });
 
@@ -111,20 +109,6 @@ const AdminServiceForm = () => {
                   ))}
                 </SelectContent>
               </Select>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="icon"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Icon (optional)</FormLabel>
-              <FormControl>
-                <Input placeholder="Enter icon name or emoji" {...field} />
-              </FormControl>
-              <FormDescription>Enter an icon name (e.g., 'wrench') or an emoji (e.g., '🔧')</FormDescription>
               <FormMessage />
             </FormItem>
           )}
