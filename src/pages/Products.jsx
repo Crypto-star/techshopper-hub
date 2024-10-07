@@ -50,8 +50,8 @@ const Products = () => {
     );
   }, [products, searchTerm]);
 
-  if (isLoading) return <div>Loading...</div>;
-  if (isError) return <div>Error fetching products</div>;
+  if (isLoading) return <div className="text-center py-8">Loading products...</div>;
+  if (isError) return <div className="text-center py-8 text-red-500">Error fetching products. Please try again later.</div>;
 
   return (
     <div className="page-container">
@@ -71,9 +71,13 @@ const Products = () => {
         </div>
       </div>
       
-      <ProductList items={filteredProducts} searchTerm={searchTerm} />
+      {products && products.length > 0 ? (
+        <ProductList items={filteredProducts} searchTerm={searchTerm} />
+      ) : (
+        <p className="text-center text-gray-600 dark:text-gray-300 mt-8">No products available at the moment.</p>
+      )}
 
-      {filteredProducts.length === 0 && (
+      {filteredProducts.length === 0 && searchTerm !== '' && (
         <p className="text-center text-gray-600 dark:text-gray-300 mt-8">No products found matching your search.</p>
       )}
 

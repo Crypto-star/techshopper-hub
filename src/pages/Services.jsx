@@ -21,8 +21,8 @@ const ServiceCard = ({ title, description, icon }) => (
 const Services = () => {
   const { data: services, isLoading, isError } = useServices();
 
-  if (isLoading) return <div>Loading...</div>;
-  if (isError) return <div>Error fetching services</div>;
+  if (isLoading) return <div className="text-center py-8">Loading services...</div>;
+  if (isError) return <div className="text-center py-8 text-red-500">Error fetching services. Please try again later.</div>;
 
   return (
     <div className="container mx-auto px-4 py-12">
@@ -32,11 +32,15 @@ const Services = () => {
         Whether you're a hobbyist, student, or professional, our expert team is here to help you succeed.
       </p>
       
-      <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-        {services.map((service) => (
-          <ServiceCard key={service.id} title={service.name} description={service.description} icon={service.icon} />
-        ))}
-      </div>
+      {services && services.length > 0 ? (
+        <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+          {services.map((service) => (
+            <ServiceCard key={service.id} title={service.name} description={service.description} icon={service.icon} />
+          ))}
+        </div>
+      ) : (
+        <p className="text-center text-gray-600 dark:text-gray-300 mt-8">No services available at the moment.</p>
+      )}
 
       <div className="mt-16 text-center">
         <Button size="lg" className="bg-gradient-to-r from-blue-500 to-purple-600 text-white hover:from-blue-600 hover:to-purple-700 transition-all duration-300">

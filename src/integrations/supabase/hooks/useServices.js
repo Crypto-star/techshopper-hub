@@ -29,6 +29,8 @@ export const useService = (id) => useQuery({
 export const useServices = () => useQuery({
     queryKey: ['services'],
     queryFn: () => fromSupabase(supabase.from('services').select('*')),
+    retry: 3,
+    retryDelay: 1000,
 });
 
 export const useAddService = () => {
