@@ -29,13 +29,8 @@ const SignIn = () => {
 
       if (error) throw error;
 
-      // Add user to the user table
-      if (data?.user) {
-        await addUser.mutateAsync({
-          user_id: data.user.id,
-          name: fullName
-        });
-      }
+      // The user will be added to the user table in the auth listener
+      // when the OTP is verified and the user is fully signed in
 
       navigate('/verify-otp', { state: { phone, fullName } });
       toast.success('A verification code has been sent to your phone.');
@@ -50,6 +45,8 @@ const SignIn = () => {
         provider: provider,
       });
       if (error) throw error;
+      // The user will be added to the user table in the auth listener
+      // when the OAuth sign-in is complete
     } catch (error) {
       toast.error(`Error signing in with ${provider}: ${error.message}`);
     }

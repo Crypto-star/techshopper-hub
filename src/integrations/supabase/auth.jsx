@@ -3,6 +3,7 @@ import { supabase } from './supabase.js';
 import { useQueryClient } from '@tanstack/react-query';
 import { Auth } from '@supabase/auth-ui-react';
 import { ThemeSupa } from '@supabase/auth-ui-shared';
+import { useAddUser, useUpdateUser } from './hooks/useUser';
 
 const SupabaseAuthContext = createContext();
 
@@ -18,6 +19,8 @@ export const SupabaseAuthProviderInner = ({ children }) => {
   const [session, setSession] = useState(null);
   const [loading, setLoading] = useState(true);
   const queryClient = useQueryClient();
+  const addUser = useAddUser();
+  const updateUser = useUpdateUser();
 
   useEffect(() => {
     const getSession = async () => {
@@ -31,9 +34,29 @@ export const SupabaseAuthProviderInner = ({ children }) => {
       setSession(session);
       queryClient.invalidateQueries('user');
       
-      if (event === 'SIGNED_IN') {
-        // Handle successful sign-in
-        // You can add additional logic here if needed
+      if (event === 'SIGNED_IN' || event === 'USER_UPDATED') {
+        const { user } = session;
+        const { data: existingUser } = await supabase
+          .from('user')
+          .select('*')
+          .eq('user_id', user.id)
+          .single();
+
+        if (!existingUser) {
+          // New user, add to the user table
+          await addUser.mutateAsync({
+            user_id: user.id,
+            name: user.user_metadata.full_name || user.user_metadata.name || 'Unknown',
+            // Add more fields as needed
+          });
+        } else if (event === 'USER_UPDATED') {
+          // Update existing user
+          await updateUser.mutateAsync({
+            id: user.id,
+            name: user.user_metadata.full_name || user.user_metadata.name || existingUser.name,
+            // Update more fields as needed
+          });
+        }
       }
     });
 
@@ -43,7 +66,7 @@ export const SupabaseAuthProviderInner = ({ children }) => {
       authListener.subscription.unsubscribe();
       setLoading(false);
     };
-  }, [queryClient]);
+  }, [queryClient, addUser, updateUser]);
 
   const logout = async () => {
     await supabase.auth.signOut();
