@@ -84,6 +84,7 @@ const Navbar = () => {
           <>
             <MobileNavItem name={session.user.user_metadata.name} path="/profile" icon={User} onClick={toggleMenu} />
             <MobileNavItem name="Admin Products" path="/admin/products" icon={Settings} onClick={toggleMenu} />
+            <MobileNavItem name="Admin Services" path="/admin/services" icon={Wrench} onClick={toggleMenu} />
             <button
               onClick={handleLogout}
               className="flex items-center space-x-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-blue-600 dark:hover:text-blue-400 block px-3 py-2 rounded-md text-base font-medium transition-colors w-full text-left"
@@ -104,6 +105,9 @@ const Navbar = () => {
               <DropdownMenuItem onSelect={() => navigate('/profile')}>Profile</DropdownMenuItem>
               <DropdownMenuItem onSelect={() => navigate('/admin/products')}>
                 <Settings className="w-4 h-4 mr-2" />Admin Products
+              </DropdownMenuItem>
+              <DropdownMenuItem onSelect={() => navigate('/admin/services')}>
+                <Wrench className="w-4 h-4 mr-2" />Admin Services
               </DropdownMenuItem>
               <DropdownMenuItem onSelect={handleLogout}>
                 <LogOut className="w-4 h-4 mr-2" />Logout
