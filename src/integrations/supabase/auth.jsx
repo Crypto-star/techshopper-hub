@@ -3,7 +3,6 @@ import { supabase } from './supabase.js';
 import { useQueryClient } from '@tanstack/react-query';
 import { Auth } from '@supabase/auth-ui-react';
 import { ThemeSupa } from '@supabase/auth-ui-shared';
-import { useAddUser, useUpdateUser } from './hooks/useUser';
 
 const SupabaseAuthContext = createContext();
 
@@ -19,8 +18,6 @@ export const SupabaseAuthProviderInner = ({ children }) => {
   const [session, setSession] = useState(null);
   const [loading, setLoading] = useState(true);
   const queryClient = useQueryClient();
-  const addUser = useAddUser();
-  const updateUser = useUpdateUser();
 
   useEffect(() => {
     const getSession = async () => {
@@ -34,39 +31,44 @@ export const SupabaseAuthProviderInner = ({ children }) => {
       setSession(session);
       queryClient.invalidateQueries('user');
       
-      if (event === 'SIGNED_IN' || event === 'USER_UPDATED') {
-        const { user } = session;
-        const { data: existingUser } = await supabase
-          .from('user')
-          .select('*')
-          .eq('user_id', user.id)
-          .single();
-
-        if (!existingUser) {
-          // New user, add to the user table
-          await addUser.mutateAsync({
-            user_id: user.id,
-            name: user.user_metadata.full_name || user.user_metadata.name || 'Unknown',
-            // Add more fields as needed
-          });
-        } else if (event === 'USER_UPDATED') {
-          // Update existing user
-          await updateUser.mutateAsync({
-            id: user.id,
-            name: user.user_metadata.full_name || user.user_metadata.name || existingUser.name,
-            // Update more fields as needed
-          });
-        }
+      if (event === 'SIGNED_IN') {
+        // Handle successful sign-in
+        // You can add additional logic here if needed
       }
     });
 
     getSession();
 
+    // Initialize Google One Tap
+    if (window.google) {
+      window.google.accounts.id.initialize({
+        client_id: import.meta.env.VITE_GOOGLE_CLIENT_ID, // Make sure to add this to your .env file
+        callback: handleCredentialResponse,
+        auto_select: false,
+      });
+      window.google.accounts.id.prompt();
+    }
+
     return () => {
       authListener.subscription.unsubscribe();
       setLoading(false);
     };
-  }, [queryClient, addUser, updateUser]);
+  }, [queryClient]);
+
+  const handleCredentialResponse = async (response) => {
+    try {
+      const { data, error } = await supabase.auth.signInWithIdToken({
+        provider: 'google',
+        token: response.credential,
+      });
+
+      if (error) throw error;
+      setSession(data.session);
+      queryClient.invalidateQueries('user');
+    } catch (error) {
+      console.error('Error signing in with Google One Tap:', error);
+    }
+  };
 
   const logout = async () => {
     await supabase.auth.signOut();
@@ -91,6 +93,6 @@ export const SupabaseAuthUI = () => (
     supabaseClient={supabase}
     appearance={{ theme: ThemeSupa }}
     theme="default"
-    providers={['google', 'github']}
+    providers={['google']}
   />
 );
