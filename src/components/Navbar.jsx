@@ -39,9 +39,7 @@ const Navbar = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const navigate = useNavigate();
   const { cart } = useCart();
-  const auth = useSupabaseAuth();
-  const session = auth?.session;
-  const logout = auth?.logout;
+  const { session, logout } = useSupabaseAuth() || {};
 
   const navItems = [
     { name: 'Products', path: '/products', icon: ShoppingCart },
@@ -82,7 +80,7 @@ const Navbar = () => {
       <>
         {isMobile ? (
           <>
-            <MobileNavItem name={session.user.user_metadata.name} path="/profile" icon={User} onClick={toggleMenu} />
+            <MobileNavItem name={session.user.user_metadata.name || 'Profile'} path="/profile" icon={User} onClick={toggleMenu} />
             <MobileNavItem name="Admin Products" path="/admin/products" icon={Settings} onClick={toggleMenu} />
             <MobileNavItem name="Admin Services" path="/admin/services" icon={Wrench} onClick={toggleMenu} />
             <button
@@ -98,7 +96,7 @@ const Navbar = () => {
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" className="flex items-center space-x-1">
                 <User className="w-4 h-4" />
-                <span>{session.user.user_metadata.name}</span>
+                <span>{session.user.user_metadata.name || 'Profile'}</span>
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent>
