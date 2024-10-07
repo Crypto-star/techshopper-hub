@@ -24,16 +24,14 @@ export const SupabaseAuthProviderInner = ({ children }) => {
 
   useEffect(() => {
     const getSession = async () => {
+      setLoading(true);
       const { data: { session } } = await supabase.auth.getSession();
       setSession(session);
       setLoading(false);
     };
 
-    getSession();
-
     const { data: authListener } = supabase.auth.onAuthStateChange(async (event, session) => {
       setSession(session);
-      setLoading(false);
       queryClient.invalidateQueries('user');
       
       if (event === 'SIGNED_IN' || event === 'USER_UPDATED') {
@@ -45,21 +43,28 @@ export const SupabaseAuthProviderInner = ({ children }) => {
           .single();
 
         if (!existingUser) {
+          // New user, add to the user table
           await addUser.mutateAsync({
             user_id: user.id,
             name: user.user_metadata.full_name || user.user_metadata.name || 'Unknown',
+            // Add more fields as needed
           });
         } else if (event === 'USER_UPDATED') {
+          // Update existing user
           await updateUser.mutateAsync({
             id: user.id,
             name: user.user_metadata.full_name || user.user_metadata.name || existingUser.name,
+            // Update more fields as needed
           });
         }
       }
     });
 
+    getSession();
+
     return () => {
       authListener.subscription.unsubscribe();
+      setLoading(false);
     };
   }, [queryClient, addUser, updateUser]);
 
@@ -67,6 +72,7 @@ export const SupabaseAuthProviderInner = ({ children }) => {
     await supabase.auth.signOut();
     setSession(null);
     queryClient.invalidateQueries('user');
+    setLoading(false);
   };
 
   return (

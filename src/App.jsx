@@ -20,9 +20,7 @@ import VerifyOTP from "./pages/VerifyOTP";
 import Profile from "./pages/Profile";
 import SearchResults from "./pages/SearchResults";
 import Cart from "./pages/Cart";
-
 import AdminProducts from "./pages/AdminProducts";
-import AdminServices from "./pages/AdminServices";
 
 const queryClient = new QueryClient();
 
@@ -53,7 +51,6 @@ const App = () => {
                       <Route path="/search" element={<SearchResults />} />
                       <Route path="/cart" element={<Cart />} />
                       <Route path="/admin/products" element={<AdminProducts />} />
-                      <Route path="/admin/services" element={<AdminServices />} />
                     </Routes>
                   </main>
                   <Footer />

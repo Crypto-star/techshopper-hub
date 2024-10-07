@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -8,23 +8,19 @@ import { supabase } from '../integrations/supabase/supabase';
 import { toast } from 'sonner';
 import { FcGoogle } from 'react-icons/fc';
 import { FaGithub } from 'react-icons/fa';
+import { useAddUser } from '../integrations/supabase/hooks/useUser';
 
 const SignIn = () => {
   const [fullName, setFullName] = useState('');
   const [phone, setPhone] = useState('');
   const { session, loading } = useSupabaseAuth();
   const navigate = useNavigate();
-
-  useEffect(() => {
-    if (session && !loading) {
-      navigate('/');
-    }
-  }, [session, loading, navigate]);
+  const addUser = useAddUser();
 
   const sendOTP = async (e) => {
     e.preventDefault();
     try {
-      const { error } = await supabase.auth.signInWithOtp({ 
+      const { data, error } = await supabase.auth.signInWithOtp({ 
         phone,
         options: { 
           data: { name: fullName }
@@ -32,6 +28,9 @@ const SignIn = () => {
       });
 
       if (error) throw error;
+
+      // The user will be added to the user table in the auth listener
+      // when the OTP is verified and the user is fully signed in
 
       navigate('/verify-otp', { state: { phone, fullName } });
       toast.success('A verification code has been sent to your phone.');
@@ -46,18 +45,15 @@ const SignIn = () => {
         provider: provider,
       });
       if (error) throw error;
+      // The user will be added to the user table in the auth listener
+      // when the OAuth sign-in is complete
     } catch (error) {
       toast.error(`Error signing in with ${provider}: ${error.message}`);
     }
   };
 
-  if (loading) {
-    return <div className="flex justify-center items-center h-screen">Loading...</div>;
-  }
-
-  if (session) {
-    return null; // This will prevent any flash of the sign-in page if the user is already signed in
-  }
+  if (loading) return <div>Loading...</div>;
+  if (session) navigate('/');
 
   return (
     <div className="container mx-auto px-4 py-8 flex justify-center items-center min-h-screen">

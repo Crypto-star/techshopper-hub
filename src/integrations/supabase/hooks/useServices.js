@@ -7,6 +7,20 @@ const fromSupabase = async (query) => {
     return data;
 };
 
+/*
+### services
+
+| name        | type   | format | required |
+|-------------|--------|--------|----------|
+| id          | int8   | number | true     |
+| name        | text   | string | true     |
+| description | text   | string | false    |
+| price       | float8 | number | true     |
+| icon        | text   | string | false    |
+
+Note: 'id' is the Primary Key.
+*/
+
 export const useService = (id) => useQuery({
     queryKey: ['services', id],
     queryFn: () => fromSupabase(supabase.from('services').select('*').eq('id', id).single()),
@@ -15,21 +29,12 @@ export const useService = (id) => useQuery({
 export const useServices = () => useQuery({
     queryKey: ['services'],
     queryFn: () => fromSupabase(supabase.from('services').select('*')),
-    retry: 3,
-    retryDelay: 1000,
 });
 
 export const useAddService = () => {
     const queryClient = useQueryClient();
     return useMutation({
-        mutationFn: async (newService) => {
-            const { data, error } = await supabase.from('services').insert([newService]).select();
-            if (error) {
-                console.error('Error adding service:', error);
-                throw error;
-            }
-            return data[0];
-        },
+        mutationFn: (newService) => fromSupabase(supabase.from('services').insert([newService])),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['services'] });
         },
