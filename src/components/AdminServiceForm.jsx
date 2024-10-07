@@ -43,7 +43,8 @@ const AdminServiceForm = () => {
       toast.success('Service added successfully');
       form.reset();
     } catch (error) {
-      toast.error('Failed to add service');
+      console.error('Error adding service:', error);
+      toast.error(`Failed to add service: ${error.message}`);
     }
   };
 

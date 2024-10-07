@@ -36,9 +36,17 @@ export const useServices = () => useQuery({
 export const useAddService = () => {
     const queryClient = useQueryClient();
     return useMutation({
-        mutationFn: (newService) => fromSupabase(supabase.from('services').insert([newService])),
+        mutationFn: async (newService) => {
+            const { data, error } = await supabase.from('services').insert([newService]).select();
+            if (error) throw error;
+            return data[0];
+        },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['services'] });
+        },
+        onError: (error) => {
+            console.error('Error adding service:', error);
+            throw error;
         },
     });
 };
