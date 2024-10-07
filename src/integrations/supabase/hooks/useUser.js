@@ -15,6 +15,7 @@ const fromSupabase = async (query) => {
 | id      | int8   | number | true     |
 | user_id | text   | string | false    |
 | name    | text   | string | false    |
+| address | text   | string | false    |
 
 Note: 'id' is the Primary Key.
 */
@@ -42,7 +43,7 @@ export const useAddUser = () => {
 export const useUpdateUser = () => {
     const queryClient = useQueryClient();
     return useMutation({
-        mutationFn: ({ id, ...updateData }) => fromSupabase(supabase.from('user').update(updateData).eq('id', id)),
+        mutationFn: ({ id, ...updateData }) => fromSupabase(supabase.from('user').update(updateData).eq('user_id', id)),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['users'] });
         },

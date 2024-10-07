@@ -39,36 +39,11 @@ export const SupabaseAuthProviderInner = ({ children }) => {
 
     getSession();
 
-    // Initialize Google One Tap
-    if (window.google) {
-      window.google.accounts.id.initialize({
-        client_id: import.meta.env.VITE_GOOGLE_CLIENT_ID, // Make sure to add this to your .env file
-        callback: handleCredentialResponse,
-        auto_select: false,
-      });
-      window.google.accounts.id.prompt();
-    }
-
     return () => {
       authListener.subscription.unsubscribe();
       setLoading(false);
     };
   }, [queryClient]);
-
-  const handleCredentialResponse = async (response) => {
-    try {
-      const { data, error } = await supabase.auth.signInWithIdToken({
-        provider: 'google',
-        token: response.credential,
-      });
-
-      if (error) throw error;
-      setSession(data.session);
-      queryClient.invalidateQueries('user');
-    } catch (error) {
-      console.error('Error signing in with Google One Tap:', error);
-    }
-  };
 
   const logout = async () => {
     await supabase.auth.signOut();
@@ -93,6 +68,6 @@ export const SupabaseAuthUI = () => (
     supabaseClient={supabase}
     appearance={{ theme: ThemeSupa }}
     theme="default"
-    providers={['google']}
+    providers={['google', 'github']}
   />
 );
