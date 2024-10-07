@@ -2,6 +2,7 @@ import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useServices } from '../integrations/supabase/hooks/useServices';
+import { Skeleton } from "@/components/ui/skeleton";
 
 const ServiceCard = ({ title, description }) => (
   <Card className="h-full transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
@@ -18,7 +19,26 @@ const ServiceCard = ({ title, description }) => (
 const Services = () => {
   const { data: services, isLoading, isError } = useServices();
 
-  if (isLoading) return <div className="text-center py-8">Loading services...</div>;
+  if (isLoading) return (
+    <div className="container mx-auto px-4 py-12">
+      <h1 className="text-4xl font-bold text-center mb-4 text-blue-600 dark:text-blue-400">Our Services</h1>
+      <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+        {[...Array(6)].map((_, index) => (
+          <Card key={index} className="h-full">
+            <CardHeader className="bg-gradient-to-r from-blue-500 to-purple-600">
+              <Skeleton className="h-6 w-3/4" />
+            </CardHeader>
+            <CardContent className="flex flex-col justify-between h-full pt-4">
+              <Skeleton className="h-4 w-full mt-2" />
+              <Skeleton className="h-4 w-3/4 mt-2" />
+              <Skeleton className="h-10 w-full mt-4" />
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+    </div>
+  );
+
   if (isError) return <div className="text-center py-8 text-red-500">Error fetching services. Please try again later.</div>;
 
   return (
@@ -46,6 +66,7 @@ const Services = () => {
       </div>
     </div>
   );
+};
 };
 
 export default Services;

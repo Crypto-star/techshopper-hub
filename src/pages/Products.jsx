@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Search } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useProducts } from '../integrations/supabase/hooks/useProducts';
+import { Skeleton } from "@/components/ui/skeleton";
 
 const ProductList = ({ items, searchTerm }) => {
   const filteredItems = useMemo(() => {
@@ -50,7 +51,23 @@ const Products = () => {
     );
   }, [products, searchTerm]);
 
-  if (isLoading) return <div className="text-center py-8">Loading products...</div>;
+  if (isLoading) return (
+    <div className="page-container">
+      <h1 className="section-title">Our Products</h1>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        {[...Array(6)].map((_, index) => (
+          <Card key={index} className="mb-8 card-hover">
+            <CardContent className="p-4">
+              <Skeleton className="h-10 w-10 rounded-full" />
+              <Skeleton className="h-4 w-3/4 mt-4" />
+              <Skeleton className="h-4 w-1/2 mt-2" />
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+    </div>
+  );
+
   if (isError) return <div className="text-center py-8 text-red-500">Error fetching products. Please try again later.</div>;
 
   return (
