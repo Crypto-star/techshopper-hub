@@ -8,17 +8,19 @@ import { supabase } from '../integrations/supabase/supabase';
 import { toast } from 'sonner';
 import { FcGoogle } from 'react-icons/fc';
 import { FaGithub } from 'react-icons/fa';
+import { useAddUser } from '../integrations/supabase/hooks/useUser';
 
 const SignIn = () => {
   const [fullName, setFullName] = useState('');
   const [phone, setPhone] = useState('');
   const { session, loading } = useSupabaseAuth();
   const navigate = useNavigate();
+  const addUser = useAddUser();
 
   const sendOTP = async (e) => {
     e.preventDefault();
     try {
-      const { error } = await supabase.auth.signInWithOtp({ 
+      const { data, error } = await supabase.auth.signInWithOtp({ 
         phone,
         options: { 
           data: { name: fullName }
@@ -26,6 +28,15 @@ const SignIn = () => {
       });
 
       if (error) throw error;
+
+      // Add user to the user table
+      if (data?.user) {
+        await addUser.mutateAsync({
+          user_id: data.user.id,
+          name: fullName
+        });
+      }
+
       navigate('/verify-otp', { state: { phone, fullName } });
       toast.success('A verification code has been sent to your phone.');
     } catch (error) {
