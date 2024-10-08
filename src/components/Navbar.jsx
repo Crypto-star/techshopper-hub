@@ -95,6 +95,10 @@ const Navbar = () => {
                     <Settings className="w-4 h-4 mr-2" />
                     Admin Products
                   </DropdownMenuItem>
+                  <DropdownMenuItem onSelect={() => navigate('/admin/services')}>
+                    <Wrench className="w-4 h-4 mr-2" />
+                    Admin Services
+                  </DropdownMenuItem>
                   <DropdownMenuItem onSelect={handleLogout}>
                     <LogOut className="w-4 h-4 mr-2" />
                     Logout
@@ -172,6 +176,14 @@ const Navbar = () => {
                 >
                   <Settings className="w-4 h-4" />
                   <span>Admin Products</span>
+                </Link>
+                <Link
+                  to="/admin/services"
+                  className="flex items-center space-x-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-blue-600 dark:hover:text-blue-400 block px-3 py-2 rounded-md text-base font-medium transition-colors"
+                  onClick={toggleMenu}
+                >
+                  <Wrench className="w-4 h-4" />
+                  <span>Admin Services</span>
                 </Link>
                 <button
                   onClick={handleLogout}
