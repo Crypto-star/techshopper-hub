@@ -4,7 +4,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useServices } from '../integrations/supabase/hooks/useServices';
+import { supabase } from '../integrations/supabase/supabase';
 import { toast } from 'sonner';
+import { X } from 'lucide-react';
 
 const ServiceCard = ({ title, description, icon }) => (
   <Card className="h-full transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
@@ -25,13 +27,26 @@ const CustomServiceForm = ({ onClose }) => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [description, setDescription] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // Here you would typically send an email or save to a database
-    // For this example, we'll just show a success message
-    toast.success('Your custom service request has been submitted!');
-    onClose();
+    setIsSubmitting(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('send-email', {
+        body: JSON.stringify({ name, email, description }),
+      });
+
+      if (error) throw error;
+
+      toast.success('Your custom service request has been submitted!');
+      onClose();
+    } catch (error) {
+      console.error('Error submitting request:', error);
+      toast.error('Failed to submit request. Please try again.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -56,7 +71,9 @@ const CustomServiceForm = ({ onClose }) => {
         onChange={(e) => setDescription(e.target.value)}
         required
       />
-      <Button type="submit">Submit Request</Button>
+      <Button type="submit" disabled={isSubmitting}>
+        {isSubmitting ? 'Submitting...' : 'Submit Request'}
+      </Button>
     </form>
   );
 };
@@ -82,19 +99,16 @@ const Services = () => {
         ))}
       </div>
 
-      <div className="mt-16 text-center">
-        <Button 
-          size="lg" 
-          className="bg-gradient-to-r from-blue-500 to-purple-600 text-white hover:from-blue-600 hover:to-purple-700 transition-all duration-300"
-          onClick={() => setShowCustomForm(true)}
-        >
-          Request a Custom Service
-        </Button>
-      </div>
-
       {showCustomForm && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4">
-          <Card className="w-full max-w-md">
+          <Card className="w-full max-w-md relative">
+            <Button
+              className="absolute top-2 right-2 p-1"
+              variant="ghost"
+              onClick={() => setShowCustomForm(false)}
+            >
+              <X className="h-4 w-4" />
+            </Button>
             <CardHeader>
               <CardTitle>Request a Custom Service</CardTitle>
             </CardHeader>
