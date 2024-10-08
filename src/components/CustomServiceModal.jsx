@@ -27,7 +27,11 @@ const CustomServiceModal = ({ onClose }) => {
       onClose();
     } catch (error) {
       console.error('Error submitting request:', error);
-      toast.error('Failed to submit request. Please try again.');
+      if (error.message === 'Failed to fetch') {
+        toast.error('Unable to reach the server. Please try again later or contact support.');
+      } else {
+        toast.error('Failed to submit request. Please try again.');
+      }
     } finally {
       setIsSubmitting(false);
     }
